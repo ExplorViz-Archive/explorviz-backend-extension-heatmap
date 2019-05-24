@@ -110,10 +110,10 @@ task renameProject() {
 		into javaSrcDir + newExtensionName
 	}
 		
-	// Replace dummy string in .project
-    String file = new File(".project").getText("UTF-8")
-    file = file.replaceAll("-dummy", "-" + newExtensionName)
-    new File(tmpDir + '/' + ".project").write(file, "UTF-8")
+	// Replace dummy string in explorviz.properties
+    String file = new File("src/main/resources/explorviz.properties").getText("UTF-8")
+    file = file.replaceAll("dummy-", newExtensionName + "-")
+    new File(tmpDir + "src/main/resources/explorviz.properties").write(file, "UTF-8")
 	
 	// Replace dummy string in settings.gradle
     file = new File("settings.gradle").getText("UTF-8")
@@ -131,11 +131,10 @@ task renameProject() {
 		into srcDir
 	}
 		
-	// .project + settings.gradle
+	// settings.gradle
 	copy {	
 		from tmpDir
 		into baseDir
-		include '.project'
 		include 'settings.gradle'
 		include 'build.gradle'
 	}
