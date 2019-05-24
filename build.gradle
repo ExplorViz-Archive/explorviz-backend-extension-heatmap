@@ -19,7 +19,7 @@ configurations.all {
 ext {
   // Version tag for the Explorviz-Backend-Shared project dependency
   // https://github.com/ExplorViz/explorviz-backend-shared
-  explorvizSharedVersion = 'v1.3.3'
+  explorvizSharedVersion = 'v1.3.20'
 }
 
 dependencies {
@@ -42,8 +42,10 @@ dependencies {
   	//implementation project(':common-concerns')
   	
   	// ExplorViz landscape model
-  	//implementation "com.github.explorviz.explorviz-backend-shared:landscape-model:${explorvizSharedVersion}"
-	
+  	implementation "com.github.explorviz.explorviz-backend-shared:landscape-model:${explorvizSharedVersion}"
+  	
+  	implementation group: 'org.apache.kafka', name: 'kafka_2.12', version: '2.2.0'
+  		
     // Use JUnit test framework
     testImplementation 'junit:junit:4.12'
 }

@@ -2,9 +2,8 @@ package net.explorviz.extension.dummy.main;
 
 import javax.inject.Inject;
 import javax.servlet.annotation.WebListener;
-import net.explorviz.extension.dummy.model.BaseModel;
 import net.explorviz.extension.dummy.services.DummyService;
-import net.explorviz.shared.common.idgen.IdGenerator;
+import net.explorviz.extension.dummy.services.KafkaLandscapeExchangeService;
 import org.glassfish.jersey.server.monitoring.ApplicationEvent;
 import org.glassfish.jersey.server.monitoring.ApplicationEvent.Type;
 import org.glassfish.jersey.server.monitoring.ApplicationEventListener;
@@ -22,10 +21,10 @@ public class SetupApplicationListener implements ApplicationEventListener {
   private static final Logger LOGGER = LoggerFactory.getLogger(SetupApplicationListener.class);
 
   @Inject
-  private DummyService dummyService;
+  private KafkaLandscapeExchangeService landscapeExchangeService;
 
   @Inject
-  private IdGenerator idGenerator;
+  private DummyService dummyService;
 
   @Override
   public void onEvent(final ApplicationEvent event) {
@@ -36,10 +35,6 @@ public class SetupApplicationListener implements ApplicationEventListener {
 
 
     if (event.getType().equals(t)) {
-
-      // start id generator
-      BaseModel.initialize(this.idGenerator);
-
       startExtension();
     }
 
@@ -56,6 +51,8 @@ public class SetupApplicationListener implements ApplicationEventListener {
     LOGGER.info("* * * * * * * * * * * * * * * * * * *");
 
     // add your DI injected code here for full DI context access
+    
+    new Thread(this.landscapeExchangeService).start();
 
     dummyService.startMyDummyStuff();
 

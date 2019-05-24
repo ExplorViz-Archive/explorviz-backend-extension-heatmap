@@ -6,6 +6,7 @@ import net.explorviz.extension.dummy.resources.TestResource;
 import net.explorviz.shared.common.provider.GenericTypeFinder;
 import net.explorviz.shared.common.provider.JsonApiListProvider;
 import net.explorviz.shared.common.provider.JsonApiProvider;
+import net.explorviz.shared.landscape.model.helper.TypeProvider;
 import net.explorviz.shared.security.filters.AuthenticationFilter;
 import net.explorviz.shared.security.filters.AuthorizationFilter;
 import net.explorviz.shared.security.filters.CorsResponseFilter;
@@ -17,6 +18,11 @@ public class Application extends ResourceConfig {
 
     GenericTypeFinder.getTypeMap().put("DummyModel", DummyModel.class);
     GenericTypeFinder.getTypeMap().put("SubDummyModel", SubDummyModel.class);
+
+    // register Landscape Model classes, since we want to use them
+    TypeProvider.getExplorVizCoreTypesAsMap().forEach((classname, classRef) -> {
+      GenericTypeFinder.getTypeMap().put(classname, classRef);
+    });
 
     // register DI
     register(new DependencyInjectionBinder());
@@ -30,9 +36,9 @@ public class Application extends ResourceConfig {
     this.register(JsonApiProvider.class);
     this.register(JsonApiListProvider.class);
 
-    // register all resources in the given package
+    // register the TestResource
     register(TestResource.class);
-    
+
     // Starting point for your DI-based extension
     this.register(SetupApplicationListener.class);
   }
