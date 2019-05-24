@@ -111,9 +111,9 @@ task renameProject() {
 	}
 		
 	// Replace dummy string in explorviz.properties
-    String file = new File("src/main/resources/explorviz.properties").getText("UTF-8")
+    String file = new File(tmpDir + '/' + "src/main/resources/explorviz.properties").getText("UTF-8")
     file = file.replaceAll("dummy-", newExtensionName + "-")
-    new File(tmpDir + "src/main/resources/explorviz.properties").write(file, "UTF-8")
+    new File(tmpDir + '/' + "src/main/resources/explorviz.properties").write(file, "UTF-8")
 	
 	// Replace dummy string in settings.gradle
     file = new File("settings.gradle").getText("UTF-8")
