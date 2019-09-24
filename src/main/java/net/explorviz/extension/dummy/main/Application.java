@@ -6,7 +6,6 @@ import net.explorviz.extension.dummy.resources.TestResource;
 import net.explorviz.shared.common.provider.GenericTypeFinder;
 import net.explorviz.shared.common.provider.JsonApiListProvider;
 import net.explorviz.shared.common.provider.JsonApiProvider;
-import net.explorviz.shared.landscape.model.helper.TypeProvider;
 import net.explorviz.shared.security.filters.AuthenticationFilter;
 import net.explorviz.shared.security.filters.AuthorizationFilter;
 import net.explorviz.shared.security.filters.CorsResponseFilter;

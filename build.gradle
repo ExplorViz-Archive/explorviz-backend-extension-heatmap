@@ -42,7 +42,7 @@ dependencies {
   	//implementation project(':common-concerns')
   	
   	// ExplorViz landscape model
-  	implementation "com.github.explorviz.explorviz-backend-shared:landscape-model:${explorvizSharedVersion}"
+  	implementation "com.github.explorviz.explorviz-backend:landscape-service:dev-1-SNAPSHOT"
   	
   	implementation group: 'org.apache.kafka', name: 'kafka_2.12', version: '2.2.0'
   		
