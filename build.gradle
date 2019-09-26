@@ -1,7 +1,7 @@
 plugins {
     id 'java'
     id 'application'
-    id "com.github.johnrengelman.shadow" version "4.0.4"
+    id "com.github.johnrengelman.shadow" version "5.1.0"
 }
 
 apply from: 'https://raw.githubusercontent.com/ExplorViz/gradle-script-plugins/master/microservice.gradle'
@@ -9,6 +9,7 @@ apply from: 'https://raw.githubusercontent.com/ExplorViz/gradle-script-plugins/m
 repositories {
     jcenter()
     maven { url 'https://jitpack.io' }
+  	maven { url 'https://oss.sonatype.org/content/repositories/snapshots' }
 }
 
 
@@ -42,8 +43,10 @@ dependencies {
   	//implementation project(':common-concerns')
   	
   	// ExplorViz landscape model
-  	implementation "com.github.explorviz.explorviz-backend:landscape-service:dev-1-SNAPSHOT"
+  	// https://oss.sonatype.org/content/repositories/snapshots/net/explorviz/
+  	implementation group: 'net.explorviz', name: 'landscape-model', version: 'dev-1-SNAPSHOT'
   	
+  	// Subscribe to ExplorViz Backend Events, e.g., new landscape every tenth second
   	implementation group: 'org.apache.kafka', name: 'kafka_2.12', version: '2.2.0'
   		
     // Use JUnit test framework

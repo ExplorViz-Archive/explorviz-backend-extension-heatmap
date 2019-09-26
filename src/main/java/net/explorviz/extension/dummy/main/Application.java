@@ -3,6 +3,7 @@ package net.explorviz.extension.dummy.main;
 import net.explorviz.extension.dummy.model.DummyModel;
 import net.explorviz.extension.dummy.model.SubDummyModel;
 import net.explorviz.extension.dummy.resources.TestResource;
+import net.explorviz.landscape.model.helper.TypeProvider;
 import net.explorviz.shared.common.provider.GenericTypeFinder;
 import net.explorviz.shared.common.provider.JsonApiListProvider;
 import net.explorviz.shared.common.provider.JsonApiProvider;
