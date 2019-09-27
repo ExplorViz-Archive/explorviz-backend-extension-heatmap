@@ -20,7 +20,7 @@ ext {
   // Version tag for the Explorviz-Backend-Shared project dependency
   // https://github.com/ExplorViz/explorviz-backend-shared
   // Published at Sonatype: https://oss.sonatype.org/content/repositories/snapshots/net/explorviz/
-  explorvizSharedVersion = 'master-SNAPSHOT'
+  explorvizSharedVersion = 'v1.4.0.4-SNAPSHOT'
   
   // Version tag for core model classes
   // Published at Sonatype: https://oss.sonatype.org/content/repositories/snapshots/net/explorviz/
