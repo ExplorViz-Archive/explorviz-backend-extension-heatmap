@@ -8,7 +8,6 @@ apply from: 'https://raw.githubusercontent.com/ExplorViz/gradle-script-plugins/m
 
 repositories {
     jcenter()
-    maven { url 'https://jitpack.io' }
   	maven { url 'https://oss.sonatype.org/content/repositories/snapshots' }
 }
 
@@ -20,7 +19,12 @@ configurations.all {
 ext {
   // Version tag for the Explorviz-Backend-Shared project dependency
   // https://github.com/ExplorViz/explorviz-backend-shared
-  explorvizSharedVersion = 'v1.3.20'
+  // Published at Sonatype: https://oss.sonatype.org/content/repositories/snapshots/net/explorviz/
+  explorvizSharedVersion = 'master-SNAPSHOT'
+  
+  // Version tag for core model classes
+  // Published at Sonatype: https://oss.sonatype.org/content/repositories/snapshots/net/explorviz/
+  explorvizModelVersion = 'dev-1-SNAPSHOT'
 }
 
 dependencies {
@@ -30,22 +34,21 @@ dependencies {
 	// https://github.com/ExplorViz/explorviz-backend-shared
 
   	// ExplorViz config injection
-  	implementation "com.github.explorviz.explorviz-backend-shared:config-injection:${explorvizSharedVersion}"
+  	implementation group: 'net.explorviz', name: 'config-injection', version: "${explorvizSharedVersion}"
   	
   	// ExplorViz common exception handling
-  	implementation "com.github.explorviz.explorviz-backend-shared:exception-handling:${explorvizSharedVersion}"
+  	implementation group: 'net.explorviz', name: 'exception-handling', version: "${explorvizSharedVersion}"
+
+	implementation group: 'net.explorviz', name: 'common-concerns', version: "${explorvizSharedVersion}"  	
   	
-  	implementation "com.github.explorviz.explorviz-backend-shared:common-concerns:${explorvizSharedVersion}"
-  	
-  	implementation "com.github.explorviz.explorviz-backend-shared:security:${explorvizSharedVersion}"
-  	
-  	// Local linking of external project dependency instead of Jitpack
-  	//implementation project(':common-concerns')
+  	implementation group: 'net.explorviz', name: 'security', version: "${explorvizSharedVersion}"
   	
   	// ExplorViz landscape model
-  	// https://oss.sonatype.org/content/repositories/snapshots/net/explorviz/
-  	implementation group: 'net.explorviz', name: 'landscape-model', version: 'dev-1-SNAPSHOT'
+  	implementation group: 'net.explorviz', name: 'landscape-model', version: "${explorvizModelVersion}"
   	
+  	// Local linking of external project dependency instead of Sonatype
+  	//implementation project(':common-concerns') 	
+  	  	
   	// Subscribe to ExplorViz Backend Events, e.g., new landscape every tenth second
   	implementation group: 'org.apache.kafka', name: 'kafka_2.12', version: '2.2.0'
   		
