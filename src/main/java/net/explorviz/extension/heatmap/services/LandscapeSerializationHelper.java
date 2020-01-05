@@ -1,4 +1,4 @@
-package net.explorviz.extension.dummy.services;
+package net.explorviz.extension.heatmap.services;
 
 import com.github.jasminb.jsonapi.JSONAPIDocument;
 import com.github.jasminb.jsonapi.ResourceConverter;

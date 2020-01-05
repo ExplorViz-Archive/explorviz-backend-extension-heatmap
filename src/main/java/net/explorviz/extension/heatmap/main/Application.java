@@ -1,8 +1,8 @@
-package net.explorviz.extension.dummy.main;
+package net.explorviz.extension.heatmap.main;
 
-import net.explorviz.extension.dummy.model.DummyModel;
-import net.explorviz.extension.dummy.model.SubDummyModel;
-import net.explorviz.extension.dummy.resources.TestResource;
+import net.explorviz.extension.heatmap.model.DummyModel;
+import net.explorviz.extension.heatmap.model.SubDummyModel;
+import net.explorviz.extension.heatmap.resources.TestResource;
 import net.explorviz.landscape.model.helper.TypeProvider;
 import net.explorviz.shared.common.provider.GenericTypeFinder;
 import net.explorviz.shared.common.provider.JsonApiListProvider;

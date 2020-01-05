@@ -65,14 +65,14 @@ jar.enabled = false
 jar {
   manifest {
     attributes(
-      'Main-Class': 'net.explorviz.extension.dummy.main.Main'
+      'Main-Class': 'net.explorviz.extension.heatmap.main.Main'
     )
   }
 }
 
 // Define the main class for the gradle application tasks
 application {
-    mainClassName = 'net.explorviz.extension.dummy.main.Main'
+    mainClassName = 'net.explorviz.extension.heatmap.main.Main'
 }
 
 shadowJar {
@@ -128,7 +128,7 @@ task renameProject() {
     
     // Replace dummy string in build.gradle
     file = new File("build.gradle").getText("UTF-8")
-    file = file.replaceAll("extension.dummy", "extension." + newExtensionName)
+    file = file.replaceAll("extension.heatmap", "extension." + newExtensionName)
     new File(tmpDir + '/' + "build.gradle").write(file, "UTF-8")
 	
 	// java src files 

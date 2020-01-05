@@ -1,9 +1,9 @@
-package net.explorviz.extension.dummy.main;
+package net.explorviz.extension.heatmap.main;
 
 import javax.inject.Inject;
 import javax.servlet.annotation.WebListener;
-import net.explorviz.extension.dummy.services.DummyService;
-import net.explorviz.extension.dummy.services.KafkaLandscapeExchangeService;
+import net.explorviz.extension.heatmap.services.DummyService;
+import net.explorviz.extension.heatmap.services.KafkaLandscapeExchangeService;
 import org.glassfish.jersey.server.monitoring.ApplicationEvent;
 import org.glassfish.jersey.server.monitoring.ApplicationEvent.Type;
 import org.glassfish.jersey.server.monitoring.ApplicationEventListener;

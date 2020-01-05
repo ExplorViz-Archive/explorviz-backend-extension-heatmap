@@ -1,9 +1,9 @@
-package net.explorviz.extension.dummy.main;
+package net.explorviz.extension.heatmap.main;
 
 import javax.inject.Singleton;
-import net.explorviz.extension.dummy.services.DummyService;
-import net.explorviz.extension.dummy.services.KafkaLandscapeExchangeService;
-import net.explorviz.extension.dummy.services.LandscapeSerializationHelper;
+import net.explorviz.extension.heatmap.services.DummyService;
+import net.explorviz.extension.heatmap.services.KafkaLandscapeExchangeService;
+import net.explorviz.extension.heatmap.services.LandscapeSerializationHelper;
 import net.explorviz.shared.common.injection.CommonDependencyInjectionBinder;
 
 /**

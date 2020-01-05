@@ -1,13 +1,13 @@
-package net.explorviz.extension.dummy.resources;
+package net.explorviz.extension.heatmap.resources;
 
 import javax.annotation.security.PermitAll;
 import javax.inject.Inject;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
-import net.explorviz.extension.dummy.model.DummyModel;
-import net.explorviz.extension.dummy.model.SubDummyModel;
-import net.explorviz.extension.dummy.services.DummyService;
+import net.explorviz.extension.heatmap.model.DummyModel;
+import net.explorviz.extension.heatmap.model.SubDummyModel;
+import net.explorviz.extension.heatmap.services.DummyService;
 
 @Path("test")
 // @RolesAllowed({"admin"})

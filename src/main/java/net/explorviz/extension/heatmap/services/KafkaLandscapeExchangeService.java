@@ -1,4 +1,4 @@
-package net.explorviz.extension.dummy.services;
+package net.explorviz.extension.heatmap.services;
 
 import com.github.jasminb.jsonapi.exceptions.DocumentSerializationException;
 import java.time.Duration;
