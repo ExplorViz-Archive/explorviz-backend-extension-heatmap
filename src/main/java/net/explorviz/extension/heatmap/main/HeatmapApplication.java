@@ -1,8 +1,8 @@
 package net.explorviz.extension.heatmap.main;
 
-import net.explorviz.extension.heatmap.model.DummyModel;
-import net.explorviz.extension.heatmap.model.SubDummyModel;
-import net.explorviz.extension.heatmap.resources.TestResource;
+import net.explorviz.extension.heatmap.model.HeatmapCollectionModel;
+import net.explorviz.extension.heatmap.model.HeatmapModel;
+import net.explorviz.extension.heatmap.resources.HeatmapCollectionResource;
 import net.explorviz.landscape.model.helper.TypeProvider;
 import net.explorviz.shared.common.provider.GenericTypeFinder;
 import net.explorviz.shared.common.provider.JsonApiListProvider;
@@ -12,12 +12,12 @@ import net.explorviz.shared.security.filters.AuthorizationFilter;
 import net.explorviz.shared.security.filters.CorsResponseFilter;
 import org.glassfish.jersey.server.ResourceConfig;
 
-public class Application extends ResourceConfig {
+public class HeatmapApplication extends ResourceConfig {
 
-  public Application() {
+  public HeatmapApplication() {
 
-    GenericTypeFinder.getTypeMap().put("DummyModel", DummyModel.class);
-    GenericTypeFinder.getTypeMap().put("SubDummyModel", SubDummyModel.class);
+    GenericTypeFinder.getTypeMap().put("HeatmapModel", HeatmapModel.class);
+    GenericTypeFinder.getTypeMap().put("HeatmapCollection", HeatmapCollectionModel.class);
 
     // register Landscape Model classes, since we want to use them
     TypeProvider.getExplorVizCoreTypesAsMap().forEach((classname, classRef) -> {
@@ -25,7 +25,7 @@ public class Application extends ResourceConfig {
     });
 
     // register DI
-    register(new DependencyInjectionBinder());
+    this.register(new DependencyInjectionBinder());
 
     // Security
     this.register(AuthenticationFilter.class);
@@ -36,8 +36,8 @@ public class Application extends ResourceConfig {
     this.register(JsonApiProvider.class);
     this.register(JsonApiListProvider.class);
 
-    // register the TestResource
-    register(TestResource.class);
+    // register the HeatmapCollectionResource
+    this.register(HeatmapCollectionResource.class);
 
     // Starting point for your DI-based extension
     this.register(SetupApplicationListener.class);

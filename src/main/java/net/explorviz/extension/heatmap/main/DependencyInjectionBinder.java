@@ -1,7 +1,7 @@
 package net.explorviz.extension.heatmap.main;
 
 import javax.inject.Singleton;
-import net.explorviz.extension.heatmap.services.DummyService;
+import net.explorviz.extension.heatmap.services.HeatmapService;
 import net.explorviz.extension.heatmap.services.KafkaLandscapeExchangeService;
 import net.explorviz.extension.heatmap.services.LandscapeSerializationHelper;
 import net.explorviz.shared.common.injection.CommonDependencyInjectionBinder;
@@ -20,7 +20,7 @@ public class DependencyInjectionBinder extends CommonDependencyInjectionBinder {
 
     // Service-specific DI
     
-    this.bind(DummyService.class).to(DummyService.class).in(Singleton.class);
+    this.bind(HeatmapService.class).to(HeatmapService.class).in(Singleton.class);
 
     this.bind(KafkaLandscapeExchangeService.class).to(KafkaLandscapeExchangeService.class)
         .in(Singleton.class);

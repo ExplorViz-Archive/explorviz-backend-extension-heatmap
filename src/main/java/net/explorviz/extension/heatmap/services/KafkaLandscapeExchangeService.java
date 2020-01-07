@@ -28,6 +28,8 @@ public class KafkaLandscapeExchangeService implements Runnable {
 
   private final LandscapeSerializationHelper serializationHelper;
 
+  private final String mongoHeatmapRepo;
+
   private final String kafkaTopic;
 
   /**
@@ -37,11 +39,13 @@ public class KafkaLandscapeExchangeService implements Runnable {
    */
   @Inject
   public KafkaLandscapeExchangeService(final LandscapeSerializationHelper serializationHelper,
+      final String mongoHeatmapRepo,
       @Config("exchange.kafka.topic.name") final String kafkaTopic,
       @Config("exchange.kafka.group.id") final String kafkaGroupId,
       @Config("exchange.kafka.bootstrap.servers") final String kafkaBootStrapServerList) {
 
     this.serializationHelper = serializationHelper;
+    this.mongoHeatmapRepo = mongoHeatmapRepo;
     this.kafkaTopic = kafkaTopic;
 
     final Properties properties = new Properties();
@@ -82,7 +86,8 @@ public class KafkaLandscapeExchangeService implements Runnable {
 
         LOGGER.info("Serialized landscape with id {}: {}", l.getId(), serializedLandscape);
 
-        // you may persist the landscape here
+
+        // get heatmap metrics from landscape and persist into db here
       }
     }
 

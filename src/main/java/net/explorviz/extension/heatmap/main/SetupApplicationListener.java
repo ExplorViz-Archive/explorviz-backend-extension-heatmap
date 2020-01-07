@@ -2,7 +2,7 @@ package net.explorviz.extension.heatmap.main;
 
 import javax.inject.Inject;
 import javax.servlet.annotation.WebListener;
-import net.explorviz.extension.heatmap.services.DummyService;
+import net.explorviz.extension.heatmap.services.HeatmapService;
 import net.explorviz.extension.heatmap.services.KafkaLandscapeExchangeService;
 import org.glassfish.jersey.server.monitoring.ApplicationEvent;
 import org.glassfish.jersey.server.monitoring.ApplicationEvent.Type;
@@ -24,7 +24,7 @@ public class SetupApplicationListener implements ApplicationEventListener {
   private KafkaLandscapeExchangeService landscapeExchangeService;
 
   @Inject
-  private DummyService dummyService;
+  private HeatmapService dummyService;
 
   @Override
   public void onEvent(final ApplicationEvent event) {
@@ -35,7 +35,7 @@ public class SetupApplicationListener implements ApplicationEventListener {
 
 
     if (event.getType().equals(t)) {
-      startExtension();
+      this.startExtension();
     }
 
   }
@@ -47,14 +47,14 @@ public class SetupApplicationListener implements ApplicationEventListener {
 
   private void startExtension() {
     LOGGER.info("* * * * * * * * * * * * * * * * * * *\n");
-    LOGGER.info("Dummy Extension Servlet initialized.\n");
+    LOGGER.info("Heatmap Extension Servlet initialized.\n");
     LOGGER.info("* * * * * * * * * * * * * * * * * * *");
 
     // add your DI injected code here for full DI context access
-    
+
     new Thread(this.landscapeExchangeService).start();
 
-    dummyService.startMyDummyStuff();
+    this.dummyService.startMyDummyStuff();
 
   }
 
