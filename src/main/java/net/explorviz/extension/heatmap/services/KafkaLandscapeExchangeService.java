@@ -3,9 +3,12 @@ package net.explorviz.extension.heatmap.services;
 import com.github.jasminb.jsonapi.exceptions.DocumentSerializationException;
 import java.time.Duration;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Properties;
 import javax.inject.Inject;
+import net.explorviz.extension.heatmap.metrics.Metric;
 import net.explorviz.landscape.model.landscape.Landscape;
+import net.explorviz.landscape.model.store.Timestamp;
 import net.explorviz.shared.config.annotations.Config;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.apache.kafka.clients.consumer.ConsumerRecords;
@@ -30,6 +33,8 @@ public class KafkaLandscapeExchangeService implements Runnable {
 
   private final String mongoHeatmapRepo;
 
+  private final List<Metric> metrics;
+
   private final String kafkaTopic;
 
   /**
@@ -40,12 +45,14 @@ public class KafkaLandscapeExchangeService implements Runnable {
   @Inject
   public KafkaLandscapeExchangeService(final LandscapeSerializationHelper serializationHelper,
       final String mongoHeatmapRepo,
+      final List<Metric> metrics,
       @Config("exchange.kafka.topic.name") final String kafkaTopic,
       @Config("exchange.kafka.group.id") final String kafkaGroupId,
       @Config("exchange.kafka.bootstrap.servers") final String kafkaBootStrapServerList) {
 
     this.serializationHelper = serializationHelper;
     this.mongoHeatmapRepo = mongoHeatmapRepo;
+    this.metrics = metrics;
     this.kafkaTopic = kafkaTopic;
 
     final Properties properties = new Properties();
@@ -86,8 +93,12 @@ public class KafkaLandscapeExchangeService implements Runnable {
 
         LOGGER.info("Serialized landscape with id {}: {}", l.getId(), serializedLandscape);
 
+        final Timestamp timestamp = l.getTimestamp();
 
-        // get heatmap metrics from landscape and persist into db here
+        // TODO:
+        // 1. compute metrics for landscape
+        // 2. broadcast metrics to clients (similar to broadcast service)
+        // 3. persist metrics into db
       }
     }
 
