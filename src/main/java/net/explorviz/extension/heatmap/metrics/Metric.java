@@ -3,9 +3,9 @@ package net.explorviz.extension.heatmap.metrics;
 import net.explorviz.landscape.model.application.Clazz;
 
 /**
- * Base class used for metrics
- * 
- * @author FRooG
+ * Base class used for inheritance of metrics.
+ *
+ * @author Tim-Niklas Reck
  *
  */
 public abstract class Metric {
@@ -30,7 +30,7 @@ public abstract class Metric {
   /**
    * The logic which is used to compute the specified metric for a given class;
    *
-   * @return
+   * @return The value of the metric for the given clazz.
    */
   public abstract int computeMetric(Clazz clazz);
 }
