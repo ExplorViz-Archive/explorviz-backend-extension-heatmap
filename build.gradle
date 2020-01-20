@@ -1,10 +1,16 @@
 plugins {
     id 'java'
+    id 'eclipse'  
     id 'application'
     id "com.github.johnrengelman.shadow" version "5.1.0"
 }
 
 apply from: 'https://raw.githubusercontent.com/ExplorViz/gradle-script-plugins/master/microservice.gradle'
+
+java {
+    sourceCompatibility = JavaVersion.VERSION_11
+    targetCompatibility = JavaVersion.VERSION_11
+}
 
 repositories {
     jcenter()
@@ -20,11 +26,11 @@ ext {
   // Version tag for the Explorviz-Backend-Shared project dependency
   // https://github.com/ExplorViz/explorviz-backend-shared
   // Published at Sonatype: https://oss.sonatype.org/content/repositories/snapshots/net/explorviz/
-  explorvizSharedVersion = 'v1.4.0.4-SNAPSHOT'
+  explorvizSharedVersion = 'v1.5.0-SNAPSHOT'
   
   // Version tag for core model classes
   // Published at Sonatype: https://oss.sonatype.org/content/repositories/snapshots/net/explorviz/
-  explorvizModelVersion = 'dev-1-SNAPSHOT'
+  explorvizModelVersion = '1.5.0-SNAPSHOT'
 }
 
 dependencies {
@@ -46,7 +52,7 @@ dependencies {
   	// ExplorViz landscape model
   	implementation group: 'net.explorviz', name: 'landscape-model', version: "${explorvizModelVersion}"
   	
-  	// Local linking of external project dependency instead of Sonatype
+  	// Local linking of external project dependency instead of Sonatype (change also settings.gradle)
   	//implementation project(':common-concerns') 	
   	  	
   	// Subscribe to ExplorViz Backend Events, e.g., new landscape every tenth second

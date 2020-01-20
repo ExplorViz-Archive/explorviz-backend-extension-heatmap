@@ -2,13 +2,15 @@ package net.explorviz.extension.heatmap.services;
 
 import com.github.jasminb.jsonapi.exceptions.DocumentSerializationException;
 import java.time.Duration;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Properties;
 import javax.inject.Inject;
+import net.explorviz.extension.heatmap.metrics.InstanceCount;
 import net.explorviz.extension.heatmap.metrics.Metric;
+import net.explorviz.extension.heatmap.model.LandscapeMetrics;
 import net.explorviz.landscape.model.landscape.Landscape;
-import net.explorviz.landscape.model.store.Timestamp;
 import net.explorviz.shared.config.annotations.Config;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.apache.kafka.clients.consumer.ConsumerRecords;
@@ -91,14 +93,20 @@ public class KafkaLandscapeExchangeService implements Runnable {
           continue;
         }
 
-        LOGGER.info("Serialized landscape with id {}: {}", l.getId(), serializedLandscape);
+        LOGGER.info("Serialized landscape with id {}:", l.getId());
 
-        final Timestamp timestamp = l.getTimestamp();
+        // final Timestamp timestamp = l.getTimestamp();
+        final List<Metric> tempMetrics = new ArrayList<>();
+        tempMetrics.add(new InstanceCount());
+
+        final LandscapeMetrics lmetrics = new LandscapeMetrics(this.metrics, l);
+        LOGGER.info("Computed metrics for landscape with id {}:", l.getId());
+
 
         // TODO:
         // 1. compute metrics for landscape
-        // 2. broadcast metrics to clients (similar to broadcast service)
-        // 3. persist metrics into db
+        // 2. persist metrics into db (together with landscape?)
+        // 3. broadcast metrics to clients (similar to broadcast service)
       }
     }
 

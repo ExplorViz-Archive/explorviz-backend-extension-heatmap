@@ -1,7 +1,8 @@
 package net.explorviz.extension.heatmap.main;
 
-import net.explorviz.extension.heatmap.model.LandscapeMetricsCollection;
-import net.explorviz.extension.heatmap.model.ApplicationMetrics;
+import net.explorviz.extension.heatmap.model.ApplicationMetric;
+import net.explorviz.extension.heatmap.model.ApplicationMetricCollection;
+import net.explorviz.extension.heatmap.model.LandscapeMetrics;
 import net.explorviz.extension.heatmap.resources.HeatmapCollectionResource;
 import net.explorviz.landscape.model.helper.TypeProvider;
 import net.explorviz.shared.common.provider.GenericTypeFinder;
@@ -16,8 +17,11 @@ public class HeatmapApplication extends ResourceConfig {
 
   public HeatmapApplication() {
 
-    GenericTypeFinder.getTypeMap().put("HeatmapModel", ApplicationMetrics.class);
-    GenericTypeFinder.getTypeMap().put("HeatmapCollection", LandscapeMetricsCollection.class);
+    GenericTypeFinder.getTypeMap().put("ApplicationMetric", ApplicationMetric.class);
+    GenericTypeFinder.getTypeMap().put("ApplicationMetricCollection",
+        ApplicationMetricCollection.class);
+    GenericTypeFinder.getTypeMap().put("LandscapeMetrics", LandscapeMetrics.class);
+
 
     // register Landscape Model classes, since we want to use them
     TypeProvider.getExplorVizCoreTypesAsMap().forEach((classname, classRef) -> {

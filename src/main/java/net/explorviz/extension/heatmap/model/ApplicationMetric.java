@@ -19,7 +19,7 @@ import net.explorviz.landscape.model.helper.ModelHelper;
  *
  */
 @Type("applicationMetrics")
-public class ApplicationMetrics extends BaseModel {
+public class ApplicationMetric extends BaseModel {
 
   private final Metric metric;
   private final String applicationId;
@@ -37,14 +37,14 @@ public class ApplicationMetrics extends BaseModel {
     return this.applicationId;
   }
 
-  public ApplicationMetrics(final Metric metric, final String applicationId,
+  public ApplicationMetric(final Metric metric, final String applicationId,
       final Map<String, Integer> classMetricValues) {
     this.metric = metric;
     this.applicationId = applicationId;
     this.classMetricValues = classMetricValues;
   }
 
-  public ApplicationMetrics(final Metric metric, final Application application) {
+  public ApplicationMetric(final Metric metric, final Application application) {
     this.applicationId = application.getId();
     this.metric = metric;
     this.classMetricValues = this.computeApplicationMetrics(application);

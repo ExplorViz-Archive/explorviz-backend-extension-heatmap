@@ -1,12 +1,13 @@
 package net.explorviz.extension.heatmap.model;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import net.explorviz.extension.heatmap.metrics.Metric;
 import net.explorviz.landscape.model.application.Application;
 import net.explorviz.landscape.model.landscape.Landscape;
+import net.explorviz.landscape.model.landscape.Node;
+import net.explorviz.landscape.model.landscape.NodeGroup;
+import net.explorviz.landscape.model.landscape.System;
 import net.explorviz.landscape.model.store.Timestamp;
 
 /**
@@ -18,14 +19,14 @@ public class LandscapeMetrics extends BaseModel {
 
   private final Timestamp timestamp;
   private final List<Application> applications;
-  private final Map<Application, ApplicationMetrics> aplicationMetrics;
-  private final Metric metric;
+  private final List<ApplicationMetricCollection> aplicationMetrics;
+  private final List<Metric> metrics;
 
-  public LandscapeMetrics(final Metric metric, final Landscape landscape) {
-    this.metric = metric;
+  public LandscapeMetrics(final List<Metric> metrics, final Landscape landscape) {
+    this.metrics = metrics;
     this.timestamp = landscape.getTimestamp();
     this.applications = this.findLandscapeApplications(landscape);
-    this.aplicationMetrics = this.computeApplicationMetrics(this.applications);
+    this.aplicationMetrics = this.computeApplicationMetrics();
   }
 
   public Timestamp getTimestamp() {
@@ -36,12 +37,12 @@ public class LandscapeMetrics extends BaseModel {
     return this.applications;
   }
 
-  public Map<Application, ApplicationMetrics> getAplicationMetrics() {
+  public List<ApplicationMetricCollection> getAplicationMetrics() {
     return this.aplicationMetrics;
   }
 
-  public Metric getMetric() {
-    return this.metric;
+  public List<Metric> getMetric() {
+    return this.metrics;
   }
 
   /**
@@ -52,23 +53,31 @@ public class LandscapeMetrics extends BaseModel {
    */
   private List<Application> findLandscapeApplications(final Landscape landscape) {
     final List<Application> applications = new ArrayList<>();
-    // TODO: create List of applications;
+
+    for (final System system : landscape.getSystems()) {
+      for (final NodeGroup nodegroup : system.getNodeGroups()) {
+        for (final Node node : nodegroup.getNodes()) {
+          applications.addAll(node.getApplications());
+        }
+      }
+    }
     return applications;
   }
 
-  /**
-   * Compute the values for the given metric for all applications.
-   *
-   * @param applications
-   * @return
-   */
-  private Map<Application, ApplicationMetrics> computeApplicationMetrics(
-      final List<Application> applications) {
-    final Map<Application, ApplicationMetrics> appMetrics = new HashMap<>();
 
-    for (final Application app : applications) {
-      appMetrics.put(app, new ApplicationMetrics(this.metric, app));
+  /**
+   * Compute the values for all metrics for all applications.
+   *
+   * @return An ApplicationMetricCollection object that holds the name and id of the application and
+   *         a map that contains class value pairs for each metric.
+   */
+  private List<ApplicationMetricCollection> computeApplicationMetrics() {
+    final List<ApplicationMetricCollection> appMetrics = new ArrayList<>();
+
+    for (final Application application : this.applications) {
+      appMetrics.add(new ApplicationMetricCollection(application, this.metrics));
     }
+
     return appMetrics;
   }
 
