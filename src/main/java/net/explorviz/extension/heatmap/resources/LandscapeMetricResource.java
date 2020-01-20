@@ -16,7 +16,7 @@ import net.explorviz.extension.heatmap.services.HeatmapService;
 @Path("heatmap")
 // @RolesAllowed({"admin"})
 @PermitAll
-public class HeatmapCollectionResource {
+public class LandscapeMetricResource {
 
   // Access annotations can also be applied at method level
 

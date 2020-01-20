@@ -35,6 +35,15 @@ ext {
 
 dependencies {
 
+	//MongoDB
+	
+	// https://mvnrepository.com/artifact/org.mongodb/mongodb-driver
+	implementation group: 'org.mongodb', name: 'mongodb-driver', version: '3.12.1'
+	
+	// JsonAPI
+	implementation 'com.github.jasminb:jsonapi-converter:0.10'
+	
+
 	// ExplorViz provides a project that contains shared source code classes for 
 	// different concerns. See:
 	// https://github.com/ExplorViz/explorviz-backend-shared

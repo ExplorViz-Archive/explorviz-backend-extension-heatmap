@@ -10,6 +10,7 @@ import javax.inject.Inject;
 import net.explorviz.extension.heatmap.metrics.InstanceCount;
 import net.explorviz.extension.heatmap.metrics.Metric;
 import net.explorviz.extension.heatmap.model.LandscapeMetrics;
+import net.explorviz.extension.heatmap.persistence.mongo.MongoLandscapeMetricJsonApiRepository;
 import net.explorviz.landscape.model.landscape.Landscape;
 import net.explorviz.shared.config.annotations.Config;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
@@ -33,7 +34,7 @@ public class KafkaLandscapeExchangeService implements Runnable {
 
   private final LandscapeSerializationHelper serializationHelper;
 
-  private final String mongoHeatmapRepo;
+  private final MongoLandscapeMetricJsonApiRepository mongoLandscapeMetricsRepo;
 
   private final List<Metric> metrics;
 
@@ -46,14 +47,14 @@ public class KafkaLandscapeExchangeService implements Runnable {
    */
   @Inject
   public KafkaLandscapeExchangeService(final LandscapeSerializationHelper serializationHelper,
-      final String mongoHeatmapRepo,
+      final MongoLandscapeMetricJsonApiRepository mongoLandscapeMetricsRepo,
       final List<Metric> metrics,
       @Config("exchange.kafka.topic.name") final String kafkaTopic,
       @Config("exchange.kafka.group.id") final String kafkaGroupId,
       @Config("exchange.kafka.bootstrap.servers") final String kafkaBootStrapServerList) {
 
     this.serializationHelper = serializationHelper;
-    this.mongoHeatmapRepo = mongoHeatmapRepo;
+    this.mongoLandscapeMetricsRepo = mongoLandscapeMetricsRepo;
     this.metrics = metrics;
     this.kafkaTopic = kafkaTopic;
 
@@ -99,13 +100,15 @@ public class KafkaLandscapeExchangeService implements Runnable {
         final List<Metric> tempMetrics = new ArrayList<>();
         tempMetrics.add(new InstanceCount());
 
+        // -- 1. compute metrics for landscape
         final LandscapeMetrics lmetrics = new LandscapeMetrics(this.metrics, l);
         LOGGER.info("Computed metrics for landscape with id {}:", l.getId());
 
+        // -- 2. persist metrics into db
+        this.mongoLandscapeMetricsRepo.save(lmetrics);
+
 
         // TODO:
-        // 1. compute metrics for landscape
-        // 2. persist metrics into db (together with landscape?)
         // 3. broadcast metrics to clients (similar to broadcast service)
       }
     }

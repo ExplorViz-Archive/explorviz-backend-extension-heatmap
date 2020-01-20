@@ -8,7 +8,6 @@ import net.explorviz.landscape.model.landscape.Landscape;
 import net.explorviz.landscape.model.landscape.Node;
 import net.explorviz.landscape.model.landscape.NodeGroup;
 import net.explorviz.landscape.model.landscape.System;
-import net.explorviz.landscape.model.store.Timestamp;
 
 /**
  *
@@ -17,19 +16,19 @@ import net.explorviz.landscape.model.store.Timestamp;
  */
 public class LandscapeMetrics extends BaseModel {
 
-  private final Timestamp timestamp;
+  private final Long timestamp;
   private final List<Application> applications;
   private final List<ApplicationMetricCollection> aplicationMetrics;
   private final List<Metric> metrics;
 
   public LandscapeMetrics(final List<Metric> metrics, final Landscape landscape) {
     this.metrics = metrics;
-    this.timestamp = landscape.getTimestamp();
+    this.timestamp = landscape.getTimestamp().getTimestamp();
     this.applications = this.findLandscapeApplications(landscape);
     this.aplicationMetrics = this.computeApplicationMetrics();
   }
 
-  public Timestamp getTimestamp() {
+  public Long getTimestamp() {
     return this.timestamp;
   }
 
