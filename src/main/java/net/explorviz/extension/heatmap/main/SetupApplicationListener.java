@@ -54,7 +54,7 @@ public class SetupApplicationListener implements ApplicationEventListener {
 
     new Thread(this.landscapeExchangeService).start();
 
-    this.dummyService.startMyDummyStuff();
+    // TODO: this.dummyService.startMyDummyStuff();
 
   }
 

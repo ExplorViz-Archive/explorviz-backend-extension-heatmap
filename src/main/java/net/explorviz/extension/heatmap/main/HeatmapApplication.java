@@ -1,5 +1,6 @@
 package net.explorviz.extension.heatmap.main;
 
+import net.explorviz.extension.heatmap.metrics.Metric;
 import net.explorviz.extension.heatmap.model.ApplicationMetric;
 import net.explorviz.extension.heatmap.model.ApplicationMetricCollection;
 import net.explorviz.extension.heatmap.model.LandscapeMetrics;
@@ -17,10 +18,13 @@ public class HeatmapApplication extends ResourceConfig {
 
   public HeatmapApplication() {
 
+    super();
+
     GenericTypeFinder.getTypeMap().put("ApplicationMetric", ApplicationMetric.class);
     GenericTypeFinder.getTypeMap().put("ApplicationMetricCollection",
         ApplicationMetricCollection.class);
     GenericTypeFinder.getTypeMap().put("LandscapeMetrics", LandscapeMetrics.class);
+    GenericTypeFinder.getTypeMap().put("Metric", Metric.class);
 
 
     // register Landscape Model classes, since we want to use them

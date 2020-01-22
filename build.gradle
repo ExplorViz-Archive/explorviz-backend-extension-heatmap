@@ -66,6 +66,15 @@ dependencies {
   	  	
   	// Subscribe to ExplorViz Backend Events, e.g., new landscape every tenth second
   	implementation group: 'org.apache.kafka', name: 'kafka_2.12', version: '2.2.0'
+  	
+  	 // SSE context for injection
+  	implementation group: 'org.glassfish.jersey.media', name: 'jersey-media-sse', version: '2.27'
+  		
+  	// https://mvnrepository.com/artifact/javax.xml.bind/jaxb-api
+	implementation group: 'javax.xml.bind', name: 'jaxb-api', version: '2.3.1'	
+	// https://mvnrepository.com/artifact/javax.activation/javax.activation-api
+	implementation group: 'javax.activation', name: 'javax.activation-api', version: '1.2.0'
+	
   		
     // Use JUnit test framework
     testImplementation 'junit:junit:4.12'

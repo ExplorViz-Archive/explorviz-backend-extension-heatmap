@@ -10,6 +10,7 @@ import javax.inject.Inject;
 import net.explorviz.extension.heatmap.metrics.InstanceCount;
 import net.explorviz.extension.heatmap.metrics.Metric;
 import net.explorviz.extension.heatmap.model.LandscapeMetrics;
+import net.explorviz.extension.heatmap.persistence.mongo.LandscapeMetricSerializationHelper;
 import net.explorviz.extension.heatmap.persistence.mongo.MongoLandscapeMetricJsonApiRepository;
 import net.explorviz.landscape.model.landscape.Landscape;
 import net.explorviz.shared.config.annotations.Config;
@@ -33,10 +34,11 @@ public class KafkaLandscapeExchangeService implements Runnable {
   private final KafkaConsumer<String, String> kafkaConsumer;
 
   private final LandscapeSerializationHelper serializationHelper;
+  private final LandscapeMetricSerializationHelper metricSerializationHelper;
 
   private final MongoLandscapeMetricJsonApiRepository mongoLandscapeMetricsRepo;
 
-  private final List<Metric> metrics;
+  private final HeatmapService heatmapService;
 
   private final String kafkaTopic;
 
@@ -47,15 +49,17 @@ public class KafkaLandscapeExchangeService implements Runnable {
    */
   @Inject
   public KafkaLandscapeExchangeService(final LandscapeSerializationHelper serializationHelper,
+      final LandscapeMetricSerializationHelper metricSerializationHelper,
       final MongoLandscapeMetricJsonApiRepository mongoLandscapeMetricsRepo,
-      final List<Metric> metrics,
+      final HeatmapService heatmapService,
       @Config("exchange.kafka.topic.name") final String kafkaTopic,
       @Config("exchange.kafka.group.id") final String kafkaGroupId,
       @Config("exchange.kafka.bootstrap.servers") final String kafkaBootStrapServerList) {
 
     this.serializationHelper = serializationHelper;
+    this.metricSerializationHelper = metricSerializationHelper;
     this.mongoLandscapeMetricsRepo = mongoLandscapeMetricsRepo;
-    this.metrics = metrics;
+    this.heatmapService = heatmapService;
     this.kafkaTopic = kafkaTopic;
 
     final Properties properties = new Properties();
@@ -100,19 +104,26 @@ public class KafkaLandscapeExchangeService implements Runnable {
         final List<Metric> tempMetrics = new ArrayList<>();
         tempMetrics.add(new InstanceCount());
 
+        final List<Metric> metrics = new ArrayList<>();
+        metrics.add(new InstanceCount());
+
         // -- 1. compute metrics for landscape
-        final LandscapeMetrics lmetrics = new LandscapeMetrics(this.metrics, l);
+        final LandscapeMetrics lmetrics = new LandscapeMetrics(metrics, l);
         LOGGER.info("Computed metrics for landscape with id {}:", l.getId());
 
         // -- 2. persist metrics into db
         this.mongoLandscapeMetricsRepo.save(lmetrics);
 
-
-        // TODO:
         // 3. broadcast metrics to clients (similar to broadcast service)
+        try {
+          final String serializedMetrics = this.metricSerializationHelper.serialize(lmetrics);
+          this.heatmapService.broadcastLandscapeMetric(serializedMetrics);
+        } catch (final DocumentSerializationException e) {
+          if (LOGGER.isErrorEnabled()) {
+            LOGGER.error("Could not serialize document. No document broadcasted.");
+          }
+        }
       }
     }
-
   }
-
 }
