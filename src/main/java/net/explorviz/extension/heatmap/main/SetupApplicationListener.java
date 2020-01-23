@@ -2,7 +2,6 @@ package net.explorviz.extension.heatmap.main;
 
 import javax.inject.Inject;
 import javax.servlet.annotation.WebListener;
-import net.explorviz.extension.heatmap.services.HeatmapService;
 import net.explorviz.extension.heatmap.services.KafkaLandscapeExchangeService;
 import org.glassfish.jersey.server.monitoring.ApplicationEvent;
 import org.glassfish.jersey.server.monitoring.ApplicationEvent.Type;
@@ -23,8 +22,8 @@ public class SetupApplicationListener implements ApplicationEventListener {
   @Inject
   private KafkaLandscapeExchangeService landscapeExchangeService;
 
-  @Inject
-  private HeatmapService dummyService;
+  // @Inject
+  // private HeatmapService dummyService;
 
   @Override
   public void onEvent(final ApplicationEvent event) {

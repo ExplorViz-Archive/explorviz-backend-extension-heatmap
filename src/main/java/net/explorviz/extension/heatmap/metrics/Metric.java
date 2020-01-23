@@ -1,5 +1,7 @@
 package net.explorviz.extension.heatmap.metrics;
 
+import com.github.jasminb.jsonapi.annotations.Type;
+import net.explorviz.extension.heatmap.model.BaseEntity;
 import net.explorviz.landscape.model.application.Clazz;
 
 /**
@@ -8,9 +10,11 @@ import net.explorviz.landscape.model.application.Clazz;
  * @author Tim-Niklas Reck
  *
  */
-public abstract class Metric {
+@Type("Metric")
+public abstract class Metric extends BaseEntity {
 
   private final String name;
+
   private final String description;
 
   public Metric(final String name, final String desc) {

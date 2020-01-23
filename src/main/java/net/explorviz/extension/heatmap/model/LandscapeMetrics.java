@@ -1,5 +1,7 @@
 package net.explorviz.extension.heatmap.model;
 
+import com.github.jasminb.jsonapi.annotations.Relationship;
+import com.github.jasminb.jsonapi.annotations.Type;
 import java.util.ArrayList;
 import java.util.List;
 import net.explorviz.extension.heatmap.metrics.Metric;
@@ -10,15 +12,25 @@ import net.explorviz.landscape.model.landscape.NodeGroup;
 import net.explorviz.landscape.model.landscape.System;
 
 /**
+ * Model representing the metric values of all applications in a software landscape.
  *
  * @author Tim-Niklas Reck
  *
  */
-public class LandscapeMetrics extends BaseModel {
+@Type("LandscapeMetrics")
+public class LandscapeMetrics extends BaseEntity {
+
+  // private static final Logger LOGGER = LoggerFactory.getLogger(LandscapeMetrics.class);
 
   private final Long timestamp;
+
+  @Relationship("applications")
   private final List<Application> applications;
+
+  @Relationship("applicationMetricCollection")
   private final List<ApplicationMetricCollection> aplicationMetrics;
+
+  @Relationship("metrics")
   private final List<Metric> metrics;
 
   public LandscapeMetrics(final List<Metric> metrics, final Landscape landscape) {

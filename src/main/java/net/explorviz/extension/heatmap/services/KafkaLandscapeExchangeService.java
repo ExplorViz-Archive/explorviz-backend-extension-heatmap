@@ -7,6 +7,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Properties;
 import javax.inject.Inject;
+import net.explorviz.extension.heatmap.metrics.ClassActivity;
 import net.explorviz.extension.heatmap.metrics.InstanceCount;
 import net.explorviz.extension.heatmap.metrics.Metric;
 import net.explorviz.extension.heatmap.model.LandscapeMetrics;
@@ -40,6 +41,8 @@ public class KafkaLandscapeExchangeService implements Runnable {
 
   private final HeatmapService heatmapService;
 
+  private final List<Metric> metrics = new ArrayList<>();
+
   private final String kafkaTopic;
 
   /**
@@ -61,6 +64,9 @@ public class KafkaLandscapeExchangeService implements Runnable {
     this.mongoLandscapeMetricsRepo = mongoLandscapeMetricsRepo;
     this.heatmapService = heatmapService;
     this.kafkaTopic = kafkaTopic;
+
+    this.metrics.add(new InstanceCount());
+    this.metrics.add(new ClassActivity());
 
     final Properties properties = new Properties();
     properties.put("bootstrap.servers", kafkaBootStrapServerList);
@@ -100,16 +106,9 @@ public class KafkaLandscapeExchangeService implements Runnable {
 
         LOGGER.info("Serialized landscape with id {}:", l.getId());
 
-        // final Timestamp timestamp = l.getTimestamp();
-        final List<Metric> tempMetrics = new ArrayList<>();
-        tempMetrics.add(new InstanceCount());
-
-        final List<Metric> metrics = new ArrayList<>();
-        metrics.add(new InstanceCount());
-
         // -- 1. compute metrics for landscape
-        final LandscapeMetrics lmetrics = new LandscapeMetrics(metrics, l);
-        LOGGER.info("Computed metrics for landscape with id {}:", l.getId());
+        final LandscapeMetrics lmetrics = new LandscapeMetrics(this.metrics, l);
+        LOGGER.info("Computed metrics for landscape with id: {}", l.getId());
 
         // -- 2. persist metrics into db
         this.mongoLandscapeMetricsRepo.save(lmetrics);

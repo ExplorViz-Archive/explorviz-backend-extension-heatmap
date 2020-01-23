@@ -1,7 +1,9 @@
 package net.explorviz.extension.heatmap.metrics;
 
+import com.github.jasminb.jsonapi.annotations.Type;
 import net.explorviz.landscape.model.application.Clazz;
 
+@Type("Metric")
 public class ImportCoupling extends Metric {
 
   public ImportCoupling() {

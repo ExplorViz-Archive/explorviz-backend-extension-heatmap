@@ -1,10 +1,12 @@
 package net.explorviz.extension.heatmap.metrics;
 
+import com.github.jasminb.jsonapi.annotations.Type;
 import net.explorviz.landscape.model.application.Clazz;
 
+@Type("Metric")
 public class ClassActivity extends Metric {
 
-  public ClassActivity(final String name, final String desc) {
+  public ClassActivity() {
     super("class activity", "Combined metric for messages and number of instances.");
   }
 

@@ -40,6 +40,22 @@ public class MongoLandscapeMetricJsonApiRepository implements LandscapeMetricRep
   @Override
   public void save(final LandscapeMetrics lmetrics) {
 
+    if (lmetrics.getApplications().isEmpty() | lmetrics.getAplicationMetrics().isEmpty()) {
+      LOGGER.info("No applications to serialize");
+      // return;
+      // } else {
+      // // TODO: remove
+      // for (final ApplicationMetricCollection m : lmetrics.getAplicationMetrics()) {
+      // LOGGER.info(m.getAppName() + ":" + m.getAppID());
+      //
+      // for (final String key : m.getMetricValues().keySet()) {
+      // LOGGER.info(key);
+      // final Map<String, Integer> map = m.getMetricValues().get(key).getClassMetricValues();
+      // map.forEach((k, v) -> LOGGER.info("fqn: " + k + ", value: " + v));
+      // }
+      // }
+
+    }
     final String landscapeMetricJsonApi;
     try {
       landscapeMetricJsonApi = this.serializationHelper.serialize(lmetrics);
@@ -50,7 +66,8 @@ public class MongoLandscapeMetricJsonApiRepository implements LandscapeMetricRep
     final MongoCollection<Document> landscapeMetricCollection =
         this.mongoHelper.getHeatmapCollection();
 
-    final Document landscapeMetricDocument = new Document();
+    final Document landscapeMetricDocument =
+        new Document();
     landscapeMetricDocument.append(MongoHelper.FIELD_ID, lmetrics.getId());
     landscapeMetricDocument.append(MongoHelper.FIELD_TIMESTAMP, lmetrics.getTimestamp());
     landscapeMetricDocument.append(MongoHelper.FIELD_HEATMAP, landscapeMetricJsonApi);

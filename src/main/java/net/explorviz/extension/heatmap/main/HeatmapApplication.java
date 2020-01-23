@@ -1,5 +1,9 @@
 package net.explorviz.extension.heatmap.main;
 
+import net.explorviz.extension.heatmap.metrics.ClassActivity;
+import net.explorviz.extension.heatmap.metrics.ExportCoupling;
+import net.explorviz.extension.heatmap.metrics.ImportCoupling;
+import net.explorviz.extension.heatmap.metrics.InstanceCount;
 import net.explorviz.extension.heatmap.metrics.Metric;
 import net.explorviz.extension.heatmap.model.ApplicationMetric;
 import net.explorviz.extension.heatmap.model.ApplicationMetricCollection;
@@ -20,11 +24,15 @@ public class HeatmapApplication extends ResourceConfig {
 
     super();
 
-    GenericTypeFinder.getTypeMap().put("ApplicationMetric", ApplicationMetric.class);
-    GenericTypeFinder.getTypeMap().put("ApplicationMetricCollection",
+    GenericTypeFinder.getTypeMap().putIfAbsent("Metric", Metric.class);
+    GenericTypeFinder.getTypeMap().putIfAbsent("ApplicationMetric", ApplicationMetric.class);
+    GenericTypeFinder.getTypeMap().putIfAbsent("ApplicationMetricCollection",
         ApplicationMetricCollection.class);
-    GenericTypeFinder.getTypeMap().put("LandscapeMetrics", LandscapeMetrics.class);
-    GenericTypeFinder.getTypeMap().put("Metric", Metric.class);
+    GenericTypeFinder.getTypeMap().putIfAbsent("LandscapeMetrics", LandscapeMetrics.class);
+    GenericTypeFinder.getTypeMap().putIfAbsent("InstanceCountMetric", InstanceCount.class);
+    GenericTypeFinder.getTypeMap().putIfAbsent("ImportCouplingMetric", ImportCoupling.class);
+    GenericTypeFinder.getTypeMap().putIfAbsent("ExportCouplingMetric", ExportCoupling.class);
+    GenericTypeFinder.getTypeMap().putIfAbsent("ClassActivityMetric", ClassActivity.class);
 
 
     // register Landscape Model classes, since we want to use them
@@ -44,8 +52,14 @@ public class HeatmapApplication extends ResourceConfig {
     this.register(JsonApiProvider.class);
     this.register(JsonApiListProvider.class);
 
-    // register the HeatmapCollectionResource
+    // resources
     this.register(LandscapeMetricResource.class);
+
+    // register the model classes
+    // this.register(LandscapeMetricResource.class);
+    // this.register(ApplicationMetricCollection.class);
+    // this.register(ApplicationMetric.class);
+    // this.register(Metric.class);
 
     // Starting point for your DI-based extension
     this.register(SetupApplicationListener.class);

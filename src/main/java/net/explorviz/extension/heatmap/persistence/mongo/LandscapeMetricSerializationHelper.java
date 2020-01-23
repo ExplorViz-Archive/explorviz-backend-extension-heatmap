@@ -6,7 +6,8 @@ import com.github.jasminb.jsonapi.exceptions.DocumentSerializationException;
 import java.util.List;
 import javax.inject.Inject;
 import net.explorviz.extension.heatmap.model.LandscapeMetrics;
-import net.explorviz.landscape.model.landscape.Landscape;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Helper class for de-/serializing landscapes from/to json api.
@@ -17,6 +18,8 @@ import net.explorviz.landscape.model.landscape.Landscape;
 public class LandscapeMetricSerializationHelper {
 
   private final ResourceConverter jsonApiConverter;
+  private static final Logger LOGGER =
+      LoggerFactory.getLogger(LandscapeMetricSerializationHelper.class);
 
   @Inject
   public LandscapeMetricSerializationHelper(final ResourceConverter jsonApiConverter) {
@@ -29,18 +32,22 @@ public class LandscapeMetricSerializationHelper {
    * @throws DocumentSerializationException if the landscape metrics could not be parsed.
    */
   public String serialize(final LandscapeMetrics l) throws DocumentSerializationException {
+
+    LOGGER.info("Serializing: " + l.toString());
+
     final JSONAPIDocument<LandscapeMetrics> landscapeDoc = new JSONAPIDocument<>(l);
     final byte[] landscapeBytes = this.jsonApiConverter.writeDocument(landscapeDoc);
     return new String(landscapeBytes);
   }
 
   /**
-   * Serializes a list of landscapes to a json api string.
+   * Serializes a list of landscape metrics to a json api string.
    *
    * @throws DocumentSerializationException if the landscape list could not be parsed.
    */
-  public String serializeToList(final List<Landscape> l) throws DocumentSerializationException {
-    final JSONAPIDocument<List<Landscape>> landscapeDoc = new JSONAPIDocument<>(l);
+  public String serializeToList(final List<LandscapeMetrics> l)
+      throws DocumentSerializationException {
+    final JSONAPIDocument<List<LandscapeMetrics>> landscapeDoc = new JSONAPIDocument<>(l);
     final byte[] landscapeBytes = this.jsonApiConverter.writeDocumentCollection(landscapeDoc);
     return new String(landscapeBytes);
   }
