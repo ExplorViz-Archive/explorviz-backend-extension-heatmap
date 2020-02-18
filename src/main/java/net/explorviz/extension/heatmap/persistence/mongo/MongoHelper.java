@@ -16,11 +16,10 @@ import org.slf4j.LoggerFactory;
  */
 public final class MongoHelper { // NOPMD
 
-  // public static final String FIELD_LANDSCAPE = "landscape"; // NOCS
   public static final String FIELD_ID = "_id";
   public static final String FIELD_TIMESTAMP = "timestamp";
-  // public static final String FIELD_REQUESTS = "totalRequests";
   public static final String FIELD_HEATMAP = "heatmap";
+  public static final String FIELD_LANDSCAPEMETRICS = "landscape-metrics";
 
   private static final Logger LOGGER = LoggerFactory.getLogger(MongoHelper.class);
 
@@ -30,8 +29,6 @@ public final class MongoHelper { // NOPMD
 
   private static final String HEATMAP_COLLECTION = "heatmap";
   private static final String LANDSCAPE_METRIC_COLLECTION = "landscape-metric";
-  // private static final String LANDSCAPE_COLLECTION = "landscape";
-  // private static final String REPLAY_COLLECTION = "replay";
 
   private MongoClient client;
 
@@ -61,7 +58,7 @@ public final class MongoHelper { // NOPMD
     if (this.client == null) {
       this.client = new MongoClient(new MongoClientURI(this.getUri()));
     } else {
-      throw new IllegalStateException("Onl y one instance allowed");
+      throw new IllegalStateException("Only one instance allowed");
     }
   }
 

@@ -15,10 +15,10 @@ import net.explorviz.extension.heatmap.model.heatmap.Heatmap;
 import net.explorviz.extension.heatmap.model.metrics.ClassActivity;
 import net.explorviz.extension.heatmap.model.metrics.InstanceCount;
 import net.explorviz.extension.heatmap.model.metrics.Metric;
-import net.explorviz.extension.heatmap.persistence.mongo.HeatmapSerializationHelper;
+import net.explorviz.extension.heatmap.persistence.mongo.LandscapeMetricsSerializationHelper;
 import net.explorviz.extension.heatmap.persistence.mongo.MongoHeatmapJsonApiRepository;
 import net.explorviz.extension.heatmap.persistence.mongo.MongoHeatmapRepository;
-import net.explorviz.extension.heatmap.persistence.mongo.MongoMetricRepository;
+import net.explorviz.extension.heatmap.persistence.mongo.MongoLandscapeMetricsRepository;
 import net.explorviz.landscape.model.landscape.Landscape;
 import net.explorviz.shared.config.annotations.Config;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
@@ -41,11 +41,11 @@ public class KafkaLandscapeExchangeService implements Runnable {
   private final KafkaConsumer<String, String> kafkaConsumer;
 
   private final LandscapeSerializationHelper serializationHelper;
-  private final HeatmapSerializationHelper heatmapSerializationHelper;
+  private final LandscapeMetricsSerializationHelper heatmapSerializationHelper;
 
   private final MongoHeatmapJsonApiRepository mongoHeatmapJsonApiRepo;
   private final MongoHeatmapRepository mongoHeatmapRepo;
-  private final MongoMetricRepository mongoMetricRepo;
+  private final MongoLandscapeMetricsRepository mongoMetricRepo;
 
   private final HeatmapService heatmapService;
 
@@ -61,10 +61,10 @@ public class KafkaLandscapeExchangeService implements Runnable {
    */
   @Inject
   public KafkaLandscapeExchangeService(final LandscapeSerializationHelper serializationHelper,
-      final HeatmapSerializationHelper heatmapSerializationHelper,
+      final LandscapeMetricsSerializationHelper heatmapSerializationHelper,
       final MongoHeatmapJsonApiRepository mongoHeatmapJsonApiRepo,
       final MongoHeatmapRepository mongoHeatmapRepo,
-      final MongoMetricRepository mongoMetricRepo,
+      final MongoLandscapeMetricsRepository mongoMetricRepo,
       final HeatmapService heatmapService,
       @Config("exchange.kafka.topic.name") final String kafkaTopic,
       @Config("exchange.kafka.group.id") final String kafkaGroupId,

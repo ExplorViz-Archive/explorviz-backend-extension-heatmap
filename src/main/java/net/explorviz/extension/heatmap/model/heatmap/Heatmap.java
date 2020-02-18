@@ -39,7 +39,7 @@ public class Heatmap extends BaseEntity {
     this.windowsize = PropertyHelper.getIntegerProperty("heatmap.window.size");
     this.timestamp = lmetrics.getTimestamp();
     this.computeAggregatedHeatmap(lmetrics, heatmapRepository.getByTimestamp(previousTimestamp));
-    this.computeWindowHeatmap(lmetrics);
+    this.computeWindowHeatmap(lmetrics, lmetricRepository.getNthLastRecord(this.windowsize));
   }
 
   /**
@@ -66,10 +66,15 @@ public class Heatmap extends BaseEntity {
    *
    * @param metrics
    */
-  private void computeWindowHeatmap(final LandscapeMetrics lmetrics) {
+  private void computeWindowHeatmap(final LandscapeMetrics lmetrics,
+      final Optional<LandscapeMetrics> previousMetrics) {
     // 1. get the heatmap of the n-1 timesteps before landscape metrics
-    // 2. last value to current value and set difference
-    this.windowedHeatmap = lmetrics;
+    if (this.windowsize == 0 || previousMetrics.isEmpty()) {
+      this.windowedHeatmap = lmetrics;
+    } else {
+      // 2. compute difference
+      this.windowedHeatmap = lmetrics.computeDifference(previousMetrics.get());
+    }
   }
 
   public long getTimestamp() {
@@ -86,6 +91,10 @@ public class Heatmap extends BaseEntity {
 
   public LandscapeMetrics getWindowedHeatmap() {
     return this.windowedHeatmap;
+  }
+
+  public int getWindowsize() {
+    return this.windowsize;
   }
 
   public void setWindowedHeatmap(final LandscapeMetrics windowedHeatmap) {

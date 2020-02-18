@@ -27,27 +27,27 @@ public class MongoHeatmapJsonApiRepository implements HeatmapRepository<String> 
 
   @Inject
   public MongoHeatmapJsonApiRepository(final MongoHelper mongoHelper,
-      final HeatmapSerializationHelper serializationHelper) {
+      final LandscapeMetricsSerializationHelper serializationHelper) {
     this.mongoHelper = mongoHelper;
   }
 
   @Override
-  public void save(final String Id, final long timestamp, final String landscapeMetricJsonApi) {
+  public void save(final String Id, final long timestamp, final String heatmapJsonApi) {
 
-    final MongoCollection<Document> landscapeMetricCollection =
+    final MongoCollection<Document> heatmapCollection =
         this.mongoHelper.getHeatmapCollection();
 
-    final Document landscapeMetricDocument =
+    final Document heatmapDocument =
         new Document();
-    landscapeMetricDocument.append(MongoHelper.FIELD_ID, Id);
-    landscapeMetricDocument.append(MongoHelper.FIELD_TIMESTAMP, timestamp);
-    landscapeMetricDocument.append(MongoHelper.FIELD_HEATMAP, landscapeMetricJsonApi);
+    heatmapDocument.append(MongoHelper.FIELD_ID, Id);
+    heatmapDocument.append(MongoHelper.FIELD_TIMESTAMP, timestamp);
+    heatmapDocument.append(MongoHelper.FIELD_HEATMAP, heatmapJsonApi);
 
     try {
-      landscapeMetricCollection.insertOne(landscapeMetricDocument);
+      heatmapCollection.insertOne(heatmapDocument);
     } catch (final MongoException e) {
       if (LOGGER.isErrorEnabled()) {
-        // LOGGER.error("No document saved.");
+        LOGGER.error("No document saved.");
         return;
       }
     }
@@ -60,13 +60,13 @@ public class MongoHeatmapJsonApiRepository implements HeatmapRepository<String> 
   @Override
   public Optional<String> getByTimestamp(final long timestamp) {
 
-    final MongoCollection<Document> landscapeMetriCollection =
+    final MongoCollection<Document> heatmapCollection =
         this.mongoHelper.getHeatmapCollection();
 
-    final Document landscapeMetricsDocument = new Document();
-    landscapeMetricsDocument.append(MongoHelper.FIELD_TIMESTAMP, timestamp);
+    final Document heatmapDocument = new Document();
+    heatmapDocument.append(MongoHelper.FIELD_TIMESTAMP, timestamp);
 
-    final FindIterable<Document> result = landscapeMetriCollection.find(landscapeMetricsDocument);
+    final FindIterable<Document> result = heatmapCollection.find(heatmapDocument);
 
     if (result.first() == null) {
       return Optional.empty();
@@ -83,12 +83,33 @@ public class MongoHeatmapJsonApiRepository implements HeatmapRepository<String> 
   @Override
   public Optional<String> getById(final String id) {
 
-    final MongoCollection<Document> landscapeMetricsCollection =
+    final MongoCollection<Document> heatmapCollection =
         this.mongoHelper.getHeatmapCollection();
 
-    final Document landscapeMetricsDocument = new Document();
+    final Document heatmapDocument = new Document();
 
-    final FindIterable<Document> result = landscapeMetricsCollection.find(landscapeMetricsDocument);
+    final FindIterable<Document> result = heatmapCollection.find(heatmapDocument);
+
+    if (result.first() == null) {
+      return Optional.empty();
+    } else {
+      return Optional.of(result.first().getString(MongoHelper.FIELD_HEATMAP));
+    }
+  }
+
+  @Override
+  public Optional<String> getNthLastRecord(final int n) {
+    final MongoCollection<Document> metricsCollection =
+        this.mongoHelper.getLandscapeMetricCollection();
+
+    // Check if there are atleast n documents in the database
+    if (metricsCollection.countDocuments() < n) {
+      return Optional.empty();
+    }
+
+    final FindIterable<Document> result =
+        metricsCollection.find().limit(1).skip(n - 1)
+            .sort(com.mongodb.client.model.Sorts.descending(MongoHelper.FIELD_HEATMAP));
 
     if (result.first() == null) {
       return Optional.empty();
@@ -101,12 +122,12 @@ public class MongoHeatmapJsonApiRepository implements HeatmapRepository<String> 
   public void cleanup(final long from) {
     final long enddate = from - TimeUnit.MINUTES.toMillis(this.intervalInMinutes);
 
-    final MongoCollection<Document> landscapeCollection = this.mongoHelper.getHeatmapCollection();
+    final MongoCollection<Document> heatmapCollection = this.mongoHelper.getHeatmapCollection();
 
-    final Document landscapeMetricsDocument = new Document();
-    landscapeMetricsDocument.append(MongoHelper.FIELD_TIMESTAMP, new BasicDBObject("$lt", enddate));
+    final Document heatmapDocument = new Document();
+    heatmapDocument.append(MongoHelper.FIELD_TIMESTAMP, new BasicDBObject("$lt", enddate));
 
-    final DeleteResult landsapeResult = landscapeCollection.deleteMany(landscapeMetricsDocument);
+    final DeleteResult landsapeResult = heatmapCollection.deleteMany(heatmapDocument);
 
     if (LOGGER.isInfoEnabled()) {
       LOGGER.info(String.format("Cleaned %d landscape metrics objects",

@@ -118,16 +118,14 @@ public class LandscapeMetrics extends BaseEntity {
   }
 
   /**
-   * Add the half of the metrics of the aggregatedMap to this.
+   * Add the half of the metrics of the aggregatedMap to this metric map.
    *
    * @param aggregatedMap
    * @return
    */
   public LandscapeMetrics aggregateHeatmaps(final LandscapeMetrics aggregatedMap) {
-    final LandscapeMetrics newHeatmap = this;
-
     // First loop: For all applications ...
-    for (final ApplicationMetricCollection appCollection : newHeatmap.aplicationMetricCollections) {
+    for (final ApplicationMetricCollection appCollection : this.aplicationMetricCollections) {
       final ApplicationMetricCollection aggregatedCollection =
           aggregatedMap.getApplicationMetricCollectionByName(appCollection.getAppName());
       if (aggregatedCollection == null) {
@@ -137,22 +135,62 @@ public class LandscapeMetrics extends BaseEntity {
       for (final ApplicationMetric appMetric : appCollection.getMetricValues()) {
         final ApplicationMetric aggregatedMetric =
             aggregatedCollection.getByMetricName(appMetric.getMetric().getName());
-        if (aggregatedMetric == null) {
-          continue;
-        }
         // Third loop: ... for all clazzes ...
         for (final ClazzMetric clazzMetric : appMetric.getClassMetricValues()) {
-          if (aggregatedMetric != null) {
-            final ClazzMetric aggregatedClazz =
-                aggregatedMetric.getClazzMetricByName(clazzMetric.getClazzName());
-            // ... add half of the value of the aggregated (old) map.
-            clazzMetric.addValue(0.5 * aggregatedClazz.getValue());
+          final ClazzMetric aggregatedClazz =
+              aggregatedMetric.getClazzMetricByName(clazzMetric.getClazzName());
+          if (aggregatedClazz != null) {
+            // ... set value to half of the old value and add the new value if an old value exists.
+            aggregatedClazz.decayAndAddValue(clazzMetric.getValue());
+          } else {
+            // ... or to the new value if there was no old value.
+            aggregatedMetric.getClassMetricValues().add(new ClazzMetric(clazzMetric.getClazzName(),
+                clazzMetric.getValue(), clazzMetric.getMetricName()));
           }
 
         }
       }
     }
-    return newHeatmap;
+    return aggregatedMap;
+  }
+
+  /**
+   * Compute the difference between the same classes of each metric object and return an object
+   * containing the difference. If a class is not present in the old object it is added and treated
+   * as if the old value was 0.
+   *
+   * @param oldMetrics
+   * @return
+   */
+  public LandscapeMetrics computeDifference(final LandscapeMetrics oldMetrics) {
+    // First loop: For all applications ...
+    for (final ApplicationMetricCollection appCollection : this.aplicationMetricCollections) {
+      final ApplicationMetricCollection comparedCollection =
+          oldMetrics.getApplicationMetricCollectionByName(appCollection.getAppName());
+      if (comparedCollection == null) {
+        continue;
+      }
+      // Second loop: ... for all metrics ...
+      for (final ApplicationMetric appMetric : appCollection.getMetricValues()) {
+        final ApplicationMetric comparedMetric =
+            comparedCollection.getByMetricName(appMetric.getMetric().getName());
+        // Third loop: ... for all clazzes ...
+        for (final ClazzMetric clazzMetric : appMetric.getClassMetricValues()) {
+          final ClazzMetric comparedClazz =
+              comparedMetric.getClazzMetricByName(clazzMetric.getClazzName());
+          if (comparedClazz != null) {
+            // ... set value to half of the old value and add the new value if an old value exists.
+            comparedClazz.subtractValue(clazzMetric.getValue());
+          } else {
+            // ... or to the new value if there was no old value.
+            comparedMetric.getClassMetricValues().add(new ClazzMetric(clazzMetric.getClazzName(),
+                clazzMetric.getValue(), clazzMetric.getMetricName()));
+          }
+
+        }
+      }
+    }
+    return oldMetrics;
   }
 
 }

@@ -22,12 +22,21 @@ public class ClazzMetric extends BaseEntity {
   }
 
   /**
-   * Add the value to the existing one.
+   * Decay this value by 0.5 and add new value.
    *
    * @param value
    */
-  public void addValue(final double value) {
-    this.value += value;
+  public void decayAndAddValue(final double value) {
+    this.value = this.value * 0.5 + value;
+  }
+
+  /**
+   * Subtract the existing value from the new one.
+   * 
+   * @param value
+   */
+  public void subtractValue(final double value) {
+    this.value = value - this.value;
   }
 
   public String getClazzName() {

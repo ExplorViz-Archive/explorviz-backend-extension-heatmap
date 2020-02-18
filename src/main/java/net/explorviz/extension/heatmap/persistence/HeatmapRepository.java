@@ -46,6 +46,14 @@ public interface HeatmapRepository<T> {
   Optional<T> getById(final String id);
 
   /**
+   * Retrieves the n-th last record from the database.
+   *
+   * @param n the number of records
+   * @return the model component
+   */
+  Optional<T> getNthLastRecord(final int n);
+
+  /**
    * Removes all model components that have exceeded their lifespan.
    *
    * @param from the reference timestamp to use for lifetime calculation.
