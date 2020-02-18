@@ -29,6 +29,7 @@ public final class MongoHelper { // NOPMD
   private static final String DEFAULT_DB = "explorviz";
 
   private static final String HEATMAP_COLLECTION = "heatmap";
+  private static final String LANDSCAPE_METRIC_COLLECTION = "landscape-metric";
   // private static final String LANDSCAPE_COLLECTION = "landscape";
   // private static final String REPLAY_COLLECTION = "replay";
 
@@ -93,16 +94,15 @@ public final class MongoHelper { // NOPMD
   }
 
   /**
-   * Returns a connection to the landscape collection.
+   * Returns a connection to the landscape metrics collection.
    */
-  // public MongoCollection<Document> getLandscapeCollection() {
-  // return this.getDatabase().getCollection(LANDSCAPE_COLLECTION);
-  // }
-  //
-  // public MongoCollection<Document> getReplayCollection() {
-  // return this.getDatabase().getCollection(REPLAY_COLLECTION);
-  // }
+  public MongoCollection<Document> getLandscapeMetricCollection() {
+    return this.getDatabase().getCollection(LANDSCAPE_METRIC_COLLECTION);
+  }
 
+  /**
+   * Returns a connection to the landscape heatmap collection.
+   */
   public MongoCollection<Document> getHeatmapCollection() {
     return this.getDatabase().getCollection(HEATMAP_COLLECTION);
   }

@@ -1,6 +1,5 @@
 package net.explorviz.extension.heatmap.persistence.mongo;
 
-import com.github.jasminb.jsonapi.exceptions.DocumentSerializationException;
 import com.mongodb.BasicDBObject;
 import com.mongodb.MongoException;
 import com.mongodb.client.FindIterable;
@@ -9,81 +8,52 @@ import com.mongodb.client.result.DeleteResult;
 import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 import javax.inject.Inject;
-import javax.ws.rs.InternalServerErrorException;
-import net.explorviz.extension.heatmap.model.LandscapeMetrics;
-import net.explorviz.extension.heatmap.persistence.LandscapeMetricRepository;
+import net.explorviz.extension.heatmap.persistence.HeatmapRepository;
 import net.explorviz.landscape.model.store.Timestamp;
 import net.explorviz.shared.config.annotations.Config;
 import org.bson.Document;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class MongoLandscapeMetricJsonApiRepository implements LandscapeMetricRepository<String> {
+public class MongoHeatmapJsonApiRepository implements HeatmapRepository<String> {
 
   private static final Logger LOGGER =
-      LoggerFactory.getLogger(MongoLandscapeMetricJsonApiRepository.class);
+      LoggerFactory.getLogger(MongoHeatmapJsonApiRepository.class);
 
   private final MongoHelper mongoHelper;
-
-  private final LandscapeMetricSerializationHelper serializationHelper;
 
   @Config("repository.persistence.intervalInMinutes")
   private int intervalInMinutes;
 
   @Inject
-  public MongoLandscapeMetricJsonApiRepository(final MongoHelper mongoHelper,
-      final LandscapeMetricSerializationHelper serializationHelper) {
+  public MongoHeatmapJsonApiRepository(final MongoHelper mongoHelper,
+      final HeatmapSerializationHelper serializationHelper) {
     this.mongoHelper = mongoHelper;
-    this.serializationHelper = serializationHelper;
   }
 
   @Override
-  public void save(final LandscapeMetrics lmetrics) {
-
-    if (lmetrics.getApplications().isEmpty() | lmetrics.getAplicationMetrics().isEmpty()) {
-      LOGGER.info("No applications to serialize");
-      // return;
-      // } else {
-      // // TODO: remove
-      // for (final ApplicationMetricCollection m : lmetrics.getAplicationMetrics()) {
-      // LOGGER.info(m.getAppName() + ":" + m.getAppID());
-      //
-      // for (final String key : m.getMetricValues().keySet()) {
-      // LOGGER.info(key);
-      // final Map<String, Integer> map = m.getMetricValues().get(key).getClassMetricValues();
-      // map.forEach((k, v) -> LOGGER.info("fqn: " + k + ", value: " + v));
-      // }
-      // }
-
-    }
-    final String landscapeMetricJsonApi;
-    try {
-      landscapeMetricJsonApi = this.serializationHelper.serialize(lmetrics);
-    } catch (final DocumentSerializationException e) {
-      throw new InternalServerErrorException("Error serializing: " + e.getMessage(), e);
-    }
+  public void save(final String Id, final long timestamp, final String landscapeMetricJsonApi) {
 
     final MongoCollection<Document> landscapeMetricCollection =
         this.mongoHelper.getHeatmapCollection();
 
     final Document landscapeMetricDocument =
         new Document();
-    landscapeMetricDocument.append(MongoHelper.FIELD_ID, lmetrics.getId());
-    landscapeMetricDocument.append(MongoHelper.FIELD_TIMESTAMP, lmetrics.getTimestamp());
+    landscapeMetricDocument.append(MongoHelper.FIELD_ID, Id);
+    landscapeMetricDocument.append(MongoHelper.FIELD_TIMESTAMP, timestamp);
     landscapeMetricDocument.append(MongoHelper.FIELD_HEATMAP, landscapeMetricJsonApi);
 
     try {
       landscapeMetricCollection.insertOne(landscapeMetricDocument);
     } catch (final MongoException e) {
       if (LOGGER.isErrorEnabled()) {
-        LOGGER.error("No document saved.");
+        // LOGGER.error("No document saved.");
         return;
       }
     }
     if (LOGGER.isDebugEnabled()) {
       LOGGER.debug(String.format("Saved landscape metrics {timestamp: %d, id: %s}",
-          lmetrics.getTimestamp(),
-          lmetrics.getId()));
+          timestamp, Id));
     }
   }
 

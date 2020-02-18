@@ -1,14 +1,14 @@
 package net.explorviz.extension.heatmap.main;
 
-import net.explorviz.extension.heatmap.metrics.ClassActivity;
-import net.explorviz.extension.heatmap.metrics.ExportCoupling;
-import net.explorviz.extension.heatmap.metrics.ImportCoupling;
-import net.explorviz.extension.heatmap.metrics.InstanceCount;
-import net.explorviz.extension.heatmap.metrics.Metric;
 import net.explorviz.extension.heatmap.model.ApplicationMetric;
 import net.explorviz.extension.heatmap.model.ApplicationMetricCollection;
 import net.explorviz.extension.heatmap.model.LandscapeMetrics;
-import net.explorviz.extension.heatmap.resources.LandscapeMetricResource;
+import net.explorviz.extension.heatmap.model.metrics.ClassActivity;
+import net.explorviz.extension.heatmap.model.metrics.ExportCoupling;
+import net.explorviz.extension.heatmap.model.metrics.ImportCoupling;
+import net.explorviz.extension.heatmap.model.metrics.InstanceCount;
+import net.explorviz.extension.heatmap.model.metrics.Metric;
+import net.explorviz.extension.heatmap.resources.HeatmapBroadcastResource;
 import net.explorviz.landscape.model.helper.TypeProvider;
 import net.explorviz.shared.common.provider.GenericTypeFinder;
 import net.explorviz.shared.common.provider.JsonApiListProvider;
@@ -53,7 +53,7 @@ public class HeatmapApplication extends ResourceConfig {
     this.register(JsonApiListProvider.class);
 
     // resources
-    this.register(LandscapeMetricResource.class);
+    this.register(HeatmapBroadcastResource.class);
 
     // register the model classes
     // this.register(LandscapeMetricResource.class);

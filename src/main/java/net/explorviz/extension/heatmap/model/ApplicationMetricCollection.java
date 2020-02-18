@@ -2,12 +2,17 @@ package net.explorviz.extension.heatmap.model;
 
 import com.github.jasminb.jsonapi.annotations.Relationship;
 import com.github.jasminb.jsonapi.annotations.Type;
-import java.util.HashMap;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
-import net.explorviz.extension.heatmap.metrics.Metric;
+import net.explorviz.extension.heatmap.model.metrics.Metric;
 import net.explorviz.landscape.model.application.Application;
 
+/**
+ * Contains the values for all metrics and clazzes of a single application.
+ * 
+ * @author Tim-Niklas Reck
+ *
+ */
 @Type("ApplicationMetricCollection")
 public class ApplicationMetricCollection extends BaseEntity {
 
@@ -18,7 +23,7 @@ public class ApplicationMetricCollection extends BaseEntity {
   private final String appID;
 
   @Relationship("metricValues")
-  private final Map<String, ApplicationMetric> metricValues;
+  private final List<ApplicationMetric> metricValues;
 
 
   public ApplicationMetricCollection(final Application application, final List<Metric> metrics) {
@@ -34,25 +39,31 @@ public class ApplicationMetricCollection extends BaseEntity {
    * @param metrics the list of metrics to be applied
    * @return
    */
-  private Map<String, ApplicationMetric> computeMetrics(final Application application,
+  private List<ApplicationMetric> computeMetrics(final Application application,
       final List<Metric> metrics) {
-    final Map<String, ApplicationMetric> map = new HashMap<>();
+    final List<ApplicationMetric> list = new ArrayList<>();
 
     for (final Metric metric : metrics) {
       final ApplicationMetric appMetrics = new ApplicationMetric(metric, application);
-      map.put(metric.getName(), appMetrics);
+      list.add(appMetrics);
     }
-    return map;
+    return list;
   }
 
   /**
    * Return the metric clazz values of the application for one specific metric.
    *
    * @param metricName the name of the metric
-   * @return the application metric object
+   * @return the application metric object or null if there is no object for the given metric.
    */
   public ApplicationMetric getByMetricName(final String metricName) {
-    return this.metricValues.get(metricName);
+    ApplicationMetric tmpMetric = null;
+    for (final ApplicationMetric appMetric : this.metricValues) {
+      if (appMetric.getMetric().getName().contentEquals(metricName)) {
+        tmpMetric = appMetric;
+      }
+    }
+    return tmpMetric;
   }
 
   public String getAppName() {
@@ -63,7 +74,7 @@ public class ApplicationMetricCollection extends BaseEntity {
     return this.appID;
   }
 
-  public Map<String, ApplicationMetric> getMetricValues() {
+  public List<ApplicationMetric> getMetricValues() {
     return this.metricValues;
   }
 }

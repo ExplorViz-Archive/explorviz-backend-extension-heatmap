@@ -3,10 +3,8 @@ package net.explorviz.extension.heatmap.model;
 import com.github.jasminb.jsonapi.annotations.Relationship;
 import com.github.jasminb.jsonapi.annotations.Type;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-import net.explorviz.extension.heatmap.metrics.Metric;
+import net.explorviz.extension.heatmap.model.metrics.Metric;
 import net.explorviz.landscape.model.application.Application;
 import net.explorviz.landscape.model.application.Clazz;
 import net.explorviz.landscape.model.application.Component;
@@ -26,19 +24,19 @@ public class ApplicationMetric extends BaseEntity {
   private final Metric metric;
 
   @Relationship("classMetricValues")
-  private final Map<String, Integer> classMetricValues;
+  private final List<ClazzMetric> classMetricValues;
 
   public Metric getMetric() {
     return this.metric;
   }
 
-  public Map<String, Integer> getClassMetricValues() {
+  public List<ClazzMetric> getClassMetricValues() {
     return this.classMetricValues;
   }
 
 
   public ApplicationMetric(final Metric metric, final String applicationId,
-      final Map<String, Integer> classMetricValues) {
+      final List<ClazzMetric> classMetricValues) {
     this.metric = metric;
     this.classMetricValues = classMetricValues;
   }
@@ -54,8 +52,8 @@ public class ApplicationMetric extends BaseEntity {
    * @param application
    * @return
    */
-  private Map<String, Integer> computeApplicationMetrics(final Application application) {
-    final Map<String, Integer> clazzMetrics = new HashMap<>();
+  private List<ClazzMetric> computeApplicationMetrics(final Application application) {
+    final List<ClazzMetric> clazzMetrics = new ArrayList<>();
 
     final List<Clazz> applicationClazzes = new ArrayList<>();
     for (final Component component : application.getComponents()) {
@@ -63,10 +61,28 @@ public class ApplicationMetric extends BaseEntity {
     }
 
     for (final Clazz clazz : applicationClazzes) {
-      clazzMetrics.put(clazz.getFullQualifiedName(), this.metric.computeMetric(clazz));
+      clazzMetrics.add(new ClazzMetric(clazz.getFullQualifiedName(),
+          this.metric.computeMetric(clazz), this.metric.getName()));
     }
 
     return clazzMetrics;
+  }
+
+  /**
+   * Return the ClazzMetric with the given clazzName
+   * 
+   * @param clazzName the full qualified name of the target clazz
+   * @return
+   */
+  public ClazzMetric getClazzMetricByName(final String clazzName) {
+    ClazzMetric clazzMetric = null;
+    for (final ClazzMetric tmpMetric : this.classMetricValues) {
+      if (tmpMetric.getClazzName().equals(clazzName)) {
+        clazzMetric = tmpMetric;
+        break;
+      }
+    }
+    return clazzMetric;
   }
 
 }

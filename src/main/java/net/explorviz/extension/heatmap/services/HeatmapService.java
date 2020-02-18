@@ -24,6 +24,11 @@ public class HeatmapService {
   private final Sse sse;
   private final SseBroadcaster broadcaster;
 
+  /**
+   * Creates a new service.
+   *
+   * @param sse - Sse entry point
+   */
   public HeatmapService(@Context final Sse sse) {
     this.sse = sse;
     this.broadcaster = sse.newBroadcaster();
@@ -64,7 +69,7 @@ public class HeatmapService {
   private void onErrorOperation(final SseEventSink sink, final Throwable e) { // NOPMD
     if (LOGGER.isErrorEnabled()) {
       LOGGER.error("Broadcasting to a SseEventSink failed. "
-          + "This may not be a problem, since there is no way to unregister.", e);
+          + "This may not be a problem, since there is no way to unregister.");
     }
   }
 

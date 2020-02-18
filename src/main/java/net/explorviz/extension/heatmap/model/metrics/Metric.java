@@ -1,4 +1,4 @@
-package net.explorviz.extension.heatmap.metrics;
+package net.explorviz.extension.heatmap.model.metrics;
 
 import com.github.jasminb.jsonapi.annotations.Type;
 import net.explorviz.extension.heatmap.model.BaseEntity;

@@ -6,8 +6,6 @@ import com.github.jasminb.jsonapi.exceptions.DocumentSerializationException;
 import java.util.List;
 import javax.inject.Inject;
 import net.explorviz.extension.heatmap.model.LandscapeMetrics;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * Helper class for de-/serializing landscapes from/to json api.
@@ -15,14 +13,14 @@ import org.slf4j.LoggerFactory;
  * @author Tim-Niklas Reck
  *
  */
-public class LandscapeMetricSerializationHelper {
+public class HeatmapSerializationHelper {
 
   private final ResourceConverter jsonApiConverter;
-  private static final Logger LOGGER =
-      LoggerFactory.getLogger(LandscapeMetricSerializationHelper.class);
+  // private static final Logger LOGGER =
+  // LoggerFactory.getLogger(LandscapeMetricSerializationHelper.class);
 
   @Inject
-  public LandscapeMetricSerializationHelper(final ResourceConverter jsonApiConverter) {
+  public HeatmapSerializationHelper(final ResourceConverter jsonApiConverter) {
     this.jsonApiConverter = jsonApiConverter;
   }
 
@@ -32,9 +30,6 @@ public class LandscapeMetricSerializationHelper {
    * @throws DocumentSerializationException if the landscape metrics could not be parsed.
    */
   public String serialize(final LandscapeMetrics l) throws DocumentSerializationException {
-
-    LOGGER.info("Serializing: " + l.toString());
-
     final JSONAPIDocument<LandscapeMetrics> landscapeDoc = new JSONAPIDocument<>(l);
     final byte[] landscapeBytes = this.jsonApiConverter.writeDocument(landscapeDoc);
     return new String(landscapeBytes);

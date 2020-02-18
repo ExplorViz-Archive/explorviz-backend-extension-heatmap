@@ -1,9 +1,9 @@
 package net.explorviz.extension.heatmap.main;
 
 import javax.inject.Singleton;
-import net.explorviz.extension.heatmap.persistence.mongo.LandscapeMetricSerializationHelper;
+import net.explorviz.extension.heatmap.persistence.mongo.HeatmapSerializationHelper;
 import net.explorviz.extension.heatmap.persistence.mongo.MongoHelper;
-import net.explorviz.extension.heatmap.persistence.mongo.MongoLandscapeMetricJsonApiRepository;
+import net.explorviz.extension.heatmap.persistence.mongo.MongoHeatmapJsonApiRepository;
 import net.explorviz.extension.heatmap.services.HeatmapService;
 import net.explorviz.extension.heatmap.services.KafkaLandscapeExchangeService;
 import net.explorviz.extension.heatmap.services.LandscapeSerializationHelper;
@@ -33,11 +33,11 @@ public class DependencyInjectionBinder extends CommonDependencyInjectionBinder {
 
     // Mongo
 
-    this.bind(LandscapeMetricSerializationHelper.class).to(LandscapeMetricSerializationHelper.class)
+    this.bind(HeatmapSerializationHelper.class).to(HeatmapSerializationHelper.class)
         .in(Singleton.class);
     this.bind(MongoHelper.class).to(MongoHelper.class).in(Singleton.class);
-    this.bind(MongoLandscapeMetricJsonApiRepository.class)
-        .to(MongoLandscapeMetricJsonApiRepository.class).in(Singleton.class);
+    this.bind(MongoHeatmapJsonApiRepository.class)
+        .to(MongoHeatmapJsonApiRepository.class).in(Singleton.class);
 
   }
 }
