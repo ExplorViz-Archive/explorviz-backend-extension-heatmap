@@ -1,5 +1,9 @@
 package net.explorviz.extension.heatmap.model.metrics;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import com.github.jasminb.jsonapi.annotations.Type;
 import net.explorviz.extension.heatmap.model.heatmap.BaseEntity;
 import net.explorviz.landscape.model.application.Clazz;
@@ -11,13 +15,17 @@ import net.explorviz.landscape.model.application.Clazz;
  *
  */
 @Type("Metric")
+@JsonIdentityInfo(generator = ObjectIdGenerators.StringIdGenerator.class, property = "super.id")
 public abstract class Metric extends BaseEntity {
 
   private final String name;
 
   private final String description;
 
-  public Metric(final String name, final String desc) {
+  @JsonCreator
+  public Metric(@JsonProperty("id") final String id, @JsonProperty("name") final String name,
+      @JsonProperty("desc") final String desc) {
+    super(id);
     this.name = name;
     this.description = desc;
   }

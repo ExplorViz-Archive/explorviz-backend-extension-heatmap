@@ -8,11 +8,6 @@ import com.github.jasminb.jsonapi.annotations.Relationship;
 import com.github.jasminb.jsonapi.annotations.Type;
 import java.util.ArrayList;
 import java.util.List;
-import net.explorviz.extension.heatmap.model.metrics.Metric;
-import net.explorviz.landscape.model.application.Application;
-import net.explorviz.landscape.model.application.Clazz;
-import net.explorviz.landscape.model.application.Component;
-import net.explorviz.landscape.model.helper.ModelHelper;
 
 /**
  * The representation of the metric values for all classes of an application in the backend. The
@@ -28,42 +23,13 @@ public class ApplicationMetric extends BaseEntity {
   private final String metricName;
 
   @Relationship("classMetricValues")
-  private final List<ClazzMetric> classMetricValues = new ArrayList<>();
-
-  public ApplicationMetric(final String id, final Metric metric, final Application application) {
-    super(id);
-    this.metricName = metric.getName();
-    this.classMetricValues.addAll(this.computeApplicationMetrics(application, metric));
-  }
+  private List<ClazzMetric> classMetricValues = new ArrayList<>();
 
   @JsonCreator
   public ApplicationMetric(@JsonProperty("id") final String id,
       @JsonProperty("metricName") final String metricName) {
     super(id);
     this.metricName = metricName;
-  }
-
-  /**
-   * Computes the metric values of the metric for a given application.
-   *
-   * @param application
-   * @return
-   */
-  private List<ClazzMetric> computeApplicationMetrics(final Application application,
-      final Metric metric) {
-    final List<ClazzMetric> clazzMetrics = new ArrayList<>();
-
-    final List<Clazz> applicationClazzes = new ArrayList<>();
-    for (final Component component : application.getComponents()) {
-      applicationClazzes.addAll(ModelHelper.getChildrenComponentClazzes(component));
-    }
-
-    for (final Clazz clazz : applicationClazzes) {
-      clazzMetrics.add(new ClazzMetric(clazz.getFullQualifiedName(),
-          metric.computeMetric(clazz));
-    }
-
-    return clazzMetrics;
   }
 
   public String getMetricName() {
@@ -89,6 +55,10 @@ public class ApplicationMetric extends BaseEntity {
       }
     }
     return clazzMetric;
+  }
+
+  public void setClassMetricValues(final List<ClazzMetric> classMetricValues) {
+    this.classMetricValues = classMetricValues;
   }
 
 }

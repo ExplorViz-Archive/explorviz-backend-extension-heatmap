@@ -5,16 +5,12 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.time.Duration;
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
 import java.util.Properties;
 import javax.inject.Inject;
 import net.explorviz.extension.heatmap.model.heatmap.Heatmap;
 import net.explorviz.extension.heatmap.model.heatmap.LandscapeMetrics;
-import net.explorviz.extension.heatmap.model.metrics.ClassActivity;
-import net.explorviz.extension.heatmap.model.metrics.InstanceCount;
-import net.explorviz.extension.heatmap.model.metrics.Metric;
+import net.explorviz.extension.heatmap.model.helper.ModelFactory;
 import net.explorviz.extension.heatmap.persistence.mongo.HeatmapSerializationHelper;
 import net.explorviz.extension.heatmap.persistence.mongo.MongoHeatmapJsonApiRepository;
 import net.explorviz.extension.heatmap.persistence.mongo.MongoHeatmapRepository;
@@ -50,7 +46,8 @@ public class KafkaLandscapeExchangeService implements Runnable {
 
   private final HeatmapService heatmapService;
 
-  private final List<Metric> metrics = new ArrayList<>();
+  private final ModelFactory modelFactory;
+
   private long previousTimestamp = 0;
 
   private final String kafkaTopic;
@@ -68,6 +65,7 @@ public class KafkaLandscapeExchangeService implements Runnable {
       final MongoHeatmapRepository mongoHeatmapRepo,
       final MongoLandscapeMetricsRepository mongoMetricRepo,
       final HeatmapService heatmapService,
+      final ModelFactory modelFactory,
       @Config("exchange.kafka.topic.name") final String kafkaTopic,
       @Config("exchange.kafka.group.id") final String kafkaGroupId,
       @Config("exchange.kafka.bootstrap.servers") final String kafkaBootStrapServerList) {
@@ -75,14 +73,12 @@ public class KafkaLandscapeExchangeService implements Runnable {
     this.serializationHelper = serializationHelper;
     this.heatmapSerializationHelper = heatmapSerializationHelper;
     // this.landscapeMetricsSerializationHelper = landscapeMetricsSerializationHelper;
+    this.modelFactory = modelFactory;
     this.mongoHeatmapJsonApiRepo = mongoHeatmapJsonApiRepo;
     this.mongoHeatmapRepo = mongoHeatmapRepo;
     this.mongoMetricRepo = mongoMetricRepo;
     this.heatmapService = heatmapService;
     this.kafkaTopic = kafkaTopic;
-
-    this.metrics.add(new InstanceCount());
-    this.metrics.add(new ClassActivity());
 
     final Properties properties = new Properties();
     properties.put("bootstrap.servers", kafkaBootStrapServerList);
@@ -133,11 +129,10 @@ public class KafkaLandscapeExchangeService implements Runnable {
 
 
         // -- 1. compute metrics for landscape
-        final LandscapeMetrics lmetrics = new LandscapeMetrics(this.metrics, l);
+        final LandscapeMetrics lmetrics = this.modelFactory.createLandscapeMetrics(l);
 
         // -- 2. compute heatmap with the new lmetrics
-        final Heatmap heatmap = new Heatmap(lmetrics, this.previousTimestamp, this.mongoHeatmapRepo,
-            this.mongoMetricRepo);
+        final Heatmap heatmap = this.modelFactory.createHeatmap(lmetrics, this.previousTimestamp);
 
         // -- 3. serialize heatmap for transmission and persistence
         String serializedHeatmap = null;

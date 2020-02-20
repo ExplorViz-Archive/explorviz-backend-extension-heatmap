@@ -3,6 +3,7 @@ package net.explorviz.extension.heatmap.main;
 import javax.inject.Singleton;
 import net.explorviz.extension.heatmap.model.heatmap.Heatmap;
 import net.explorviz.extension.heatmap.model.heatmap.LandscapeMetrics;
+import net.explorviz.extension.heatmap.model.helper.ModelFactory;
 import net.explorviz.extension.heatmap.persistence.HeatmapRepository;
 import net.explorviz.extension.heatmap.persistence.mongo.HeatmapSerializationHelper;
 import net.explorviz.extension.heatmap.persistence.mongo.LandscapeMetricsSerializationHelper;
@@ -28,13 +29,17 @@ public class DependencyInjectionBinder extends CommonDependencyInjectionBinder {
     // Common DI
     super.configure();
 
+    // Heatmap model specific DI
+
+    this.bind(ModelFactory.class).to(ModelFactory.class).in(Singleton.class);
+
     // Service-specific DI
 
     this.bind(HeatmapService.class).to(HeatmapService.class).in(Singleton.class);
 
+    // Landscape concerning DI
     this.bind(KafkaLandscapeExchangeService.class).to(KafkaLandscapeExchangeService.class)
         .in(Singleton.class);
-
     this.bind(LandscapeSerializationHelper.class).to(LandscapeSerializationHelper.class)
         .in(Singleton.class);
 

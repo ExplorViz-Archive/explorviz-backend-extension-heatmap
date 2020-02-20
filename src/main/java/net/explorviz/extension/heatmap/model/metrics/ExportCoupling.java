@@ -1,13 +1,19 @@
 package net.explorviz.extension.heatmap.model.metrics;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import com.github.jasminb.jsonapi.annotations.Type;
 import net.explorviz.landscape.model.application.Clazz;
 
 @Type("ExportCoupling")
+@JsonIdentityInfo(generator = ObjectIdGenerators.StringIdGenerator.class, property = "super.id")
 public class ExportCoupling extends Metric {
 
-  public ExportCoupling(final String name, final String desc) {
-    super("export coupling",
+  @JsonCreator
+  public ExportCoupling(@JsonProperty("id") final String id) {
+    super(id, "export coupling",
         "Number of messages received by all methods of all object of a class.");
   }
 
