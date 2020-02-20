@@ -1,10 +1,12 @@
 package net.explorviz.extension.heatmap.model.heatmap;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import com.github.jasminb.jsonapi.annotations.Relationship;
 import com.github.jasminb.jsonapi.annotations.Type;
 import java.util.Optional;
-import net.explorviz.extension.heatmap.model.BaseEntity;
-import net.explorviz.extension.heatmap.model.LandscapeMetrics;
 import net.explorviz.extension.heatmap.persistence.HeatmapRepository;
 import net.explorviz.shared.config.helper.PropertyHelper;
 
@@ -15,6 +17,7 @@ import net.explorviz.shared.config.helper.PropertyHelper;
  *
  */
 @Type("Heatmap")
+@JsonIdentityInfo(generator = ObjectIdGenerators.StringIdGenerator.class, property = "super.id")
 public class Heatmap extends BaseEntity {
 
   private final int windowsize;
@@ -31,16 +34,31 @@ public class Heatmap extends BaseEntity {
    *
    * @param lmetrics
    */
-  public Heatmap(final LandscapeMetrics lmetrics,
+  public Heatmap(
+      @JsonProperty("id") final String id,
+      final LandscapeMetrics lmetrics,
       final long previousTimestamp,
       final HeatmapRepository<Heatmap> heatmapRepository,
       final HeatmapRepository<LandscapeMetrics> lmetricRepository) {
 
+    super(id);
     this.windowsize = PropertyHelper.getIntegerProperty("heatmap.window.size");
     this.timestamp = lmetrics.getTimestamp();
     this.computeAggregatedHeatmap(lmetrics, heatmapRepository.getByTimestamp(previousTimestamp));
     this.computeWindowHeatmap(lmetrics, lmetricRepository.getNthLastRecord(this.windowsize));
   }
+
+  @JsonCreator
+  public Heatmap(@JsonProperty("id") final String id,
+      @JsonProperty("windowsize") final int windowsize,
+      @JsonProperty("timestamp") final long timestamp) {
+
+    super(id);
+    this.windowsize = windowsize;
+    this.timestamp = timestamp;
+  }
+
+
 
   /**
    * Compute the aggregated heatmap by adding the (decaying) old values to the new metrics. If there

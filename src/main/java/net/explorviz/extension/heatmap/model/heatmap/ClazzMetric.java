@@ -1,5 +1,9 @@
-package net.explorviz.extension.heatmap.model;
+package net.explorviz.extension.heatmap.model.heatmap;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import com.github.jasminb.jsonapi.annotations.Type;
 
 /**
@@ -9,16 +13,19 @@ import com.github.jasminb.jsonapi.annotations.Type;
  *
  */
 @Type("ClazzMetric")
+@JsonIdentityInfo(generator = ObjectIdGenerators.StringIdGenerator.class, property = "super.id")
 public class ClazzMetric extends BaseEntity {
 
   private final String clazzName;
   private double value;
-  private final String metricName;
 
-  public ClazzMetric(final String clazzName, final double value, final String metricName) {
+  @JsonCreator
+  public ClazzMetric(@JsonProperty("id") final String id,
+      @JsonProperty("clazzName") final String clazzName,
+      @JsonProperty("value") final double value) {
+    super(id);
     this.clazzName = clazzName;
     this.value = value;
-    this.metricName = metricName;
   }
 
   /**
@@ -32,7 +39,7 @@ public class ClazzMetric extends BaseEntity {
 
   /**
    * Subtract the existing value from the new one.
-   * 
+   *
    * @param value
    */
   public void subtractValue(final double value) {
@@ -45,9 +52,5 @@ public class ClazzMetric extends BaseEntity {
 
   public double getValue() {
     return this.value;
-  }
-
-  public String getMetricName() {
-    return this.metricName;
   }
 }

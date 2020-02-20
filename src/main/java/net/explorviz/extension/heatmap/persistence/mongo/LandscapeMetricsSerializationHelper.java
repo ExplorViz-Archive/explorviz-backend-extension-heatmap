@@ -4,7 +4,7 @@ import com.github.jasminb.jsonapi.JSONAPIDocument;
 import com.github.jasminb.jsonapi.ResourceConverter;
 import com.github.jasminb.jsonapi.exceptions.DocumentSerializationException;
 import javax.inject.Inject;
-import net.explorviz.extension.heatmap.model.LandscapeMetrics;
+import net.explorviz.extension.heatmap.model.heatmap.LandscapeMetrics;
 
 /**
  * Helper class for de-/serializing landscapes from/to json api.

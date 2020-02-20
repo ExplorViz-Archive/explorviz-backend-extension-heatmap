@@ -10,12 +10,12 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Properties;
 import javax.inject.Inject;
-import net.explorviz.extension.heatmap.model.LandscapeMetrics;
 import net.explorviz.extension.heatmap.model.heatmap.Heatmap;
+import net.explorviz.extension.heatmap.model.heatmap.LandscapeMetrics;
 import net.explorviz.extension.heatmap.model.metrics.ClassActivity;
 import net.explorviz.extension.heatmap.model.metrics.InstanceCount;
 import net.explorviz.extension.heatmap.model.metrics.Metric;
-import net.explorviz.extension.heatmap.persistence.mongo.LandscapeMetricsSerializationHelper;
+import net.explorviz.extension.heatmap.persistence.mongo.HeatmapSerializationHelper;
 import net.explorviz.extension.heatmap.persistence.mongo.MongoHeatmapJsonApiRepository;
 import net.explorviz.extension.heatmap.persistence.mongo.MongoHeatmapRepository;
 import net.explorviz.extension.heatmap.persistence.mongo.MongoLandscapeMetricsRepository;
@@ -41,7 +41,8 @@ public class KafkaLandscapeExchangeService implements Runnable {
   private final KafkaConsumer<String, String> kafkaConsumer;
 
   private final LandscapeSerializationHelper serializationHelper;
-  private final LandscapeMetricsSerializationHelper heatmapSerializationHelper;
+  private final HeatmapSerializationHelper heatmapSerializationHelper;
+  // private final LandscapeMetricsSerializationHelper landscapeMetricsSerializationHelper;
 
   private final MongoHeatmapJsonApiRepository mongoHeatmapJsonApiRepo;
   private final MongoHeatmapRepository mongoHeatmapRepo;
@@ -61,7 +62,8 @@ public class KafkaLandscapeExchangeService implements Runnable {
    */
   @Inject
   public KafkaLandscapeExchangeService(final LandscapeSerializationHelper serializationHelper,
-      final LandscapeMetricsSerializationHelper heatmapSerializationHelper,
+      final HeatmapSerializationHelper heatmapSerializationHelper,
+      // final LandscapeMetricsSerializationHelper landscapeMetricsSerializationHelper,
       final MongoHeatmapJsonApiRepository mongoHeatmapJsonApiRepo,
       final MongoHeatmapRepository mongoHeatmapRepo,
       final MongoLandscapeMetricsRepository mongoMetricRepo,
@@ -72,6 +74,7 @@ public class KafkaLandscapeExchangeService implements Runnable {
 
     this.serializationHelper = serializationHelper;
     this.heatmapSerializationHelper = heatmapSerializationHelper;
+    // this.landscapeMetricsSerializationHelper = landscapeMetricsSerializationHelper;
     this.mongoHeatmapJsonApiRepo = mongoHeatmapJsonApiRepo;
     this.mongoHeatmapRepo = mongoHeatmapRepo;
     this.mongoMetricRepo = mongoMetricRepo;
@@ -122,12 +125,12 @@ public class KafkaLandscapeExchangeService implements Runnable {
         Landscape l;
         try {
           l = this.serializationHelper.deserialize(serializedLandscape);
+          LOGGER.info("Deserialized landscape with id {}:", l.getId());
         } catch (final DocumentSerializationException e) {
-          // LOGGER.error("Could not deserialize landscape with value {}", serializedLandscape, e);
+          LOGGER.error("Could not deserialize landscape with value {}", serializedLandscape, e);
           continue;
         }
 
-        LOGGER.info("Deserialized landscape with id {}:", l.getId());
 
         // -- 1. compute metrics for landscape
         final LandscapeMetrics lmetrics = new LandscapeMetrics(this.metrics, l);
@@ -139,8 +142,8 @@ public class KafkaLandscapeExchangeService implements Runnable {
         // -- 3. serialize heatmap for transmission and persistence
         String serializedHeatmap = null;
         try {
-          LOGGER.info("Trying to serialize {}", lmetrics.getId());
-          serializedHeatmap = this.heatmapSerializationHelper.serialize(lmetrics);
+          LOGGER.info("Trying to serialize {}", heatmap.getId());
+          serializedHeatmap = this.heatmapSerializationHelper.serialize(heatmap);
         } catch (final DocumentSerializationException e) {
           if (LOGGER.isErrorEnabled()) {
             LOGGER.error("Could not serialize document. No document broadcasted.");
@@ -152,7 +155,6 @@ public class KafkaLandscapeExchangeService implements Runnable {
           // -- 4. persist heatmap and lmetrics into db
           this.mongoHeatmapJsonApiRepo.save(heatmap.getId(), heatmap.getTimestamp(),
               serializedHeatmap);
-          this.mongoHeatmapRepo.save(heatmap.getId(), heatmap.getTimestamp(), heatmap);
           this.mongoMetricRepo.save(lmetrics.getId(), lmetrics.getTimestamp(), lmetrics);
 
           // 6. broadcast serialized heatmap to clients (similar to broadcast service)

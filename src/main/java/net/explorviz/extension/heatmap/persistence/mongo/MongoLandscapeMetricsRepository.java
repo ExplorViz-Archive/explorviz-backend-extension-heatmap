@@ -10,7 +10,7 @@ import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 import javax.inject.Inject;
 import javax.ws.rs.InternalServerErrorException;
-import net.explorviz.extension.heatmap.model.LandscapeMetrics;
+import net.explorviz.extension.heatmap.model.heatmap.LandscapeMetrics;
 import net.explorviz.extension.heatmap.persistence.HeatmapRepository;
 import net.explorviz.landscape.model.store.Timestamp;
 import net.explorviz.shared.config.annotations.Config;
@@ -59,7 +59,7 @@ public class MongoLandscapeMetricsRepository implements HeatmapRepository<Landsc
       metricsCollection.insertOne(metricsDocument);
     } catch (final MongoException e) {
       if (LOGGER.isErrorEnabled()) {
-        LOGGER.error("No document saved.");
+        LOGGER.error("No document saved: " + e.getMessage());
       }
     }
     if (LOGGER.isDebugEnabled()) {

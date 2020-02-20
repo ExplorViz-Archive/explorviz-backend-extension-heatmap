@@ -1,8 +1,8 @@
 package net.explorviz.extension.heatmap.main;
 
 import javax.inject.Singleton;
-import net.explorviz.extension.heatmap.model.LandscapeMetrics;
 import net.explorviz.extension.heatmap.model.heatmap.Heatmap;
+import net.explorviz.extension.heatmap.model.heatmap.LandscapeMetrics;
 import net.explorviz.extension.heatmap.persistence.HeatmapRepository;
 import net.explorviz.extension.heatmap.persistence.mongo.HeatmapSerializationHelper;
 import net.explorviz.extension.heatmap.persistence.mongo.LandscapeMetricsSerializationHelper;

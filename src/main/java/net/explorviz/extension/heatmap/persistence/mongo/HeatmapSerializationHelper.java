@@ -16,7 +16,7 @@ public class HeatmapSerializationHelper {
   }
 
   /**
-   * Serializes a {@link Heatmap}} object to a json api string.
+   * Serializes a {@link Heatmap} object to a json api string.
    *
    * @throws DocumentSerializationException if the landscape metrics could not be parsed.
    */

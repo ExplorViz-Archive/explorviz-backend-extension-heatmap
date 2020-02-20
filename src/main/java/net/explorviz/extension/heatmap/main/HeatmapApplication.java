@@ -1,8 +1,9 @@
 package net.explorviz.extension.heatmap.main;
 
-import net.explorviz.extension.heatmap.model.ApplicationMetric;
-import net.explorviz.extension.heatmap.model.ApplicationMetricCollection;
-import net.explorviz.extension.heatmap.model.LandscapeMetrics;
+import net.explorviz.extension.heatmap.model.heatmap.ApplicationMetric;
+import net.explorviz.extension.heatmap.model.heatmap.ApplicationMetricCollection;
+import net.explorviz.extension.heatmap.model.heatmap.Heatmap;
+import net.explorviz.extension.heatmap.model.heatmap.LandscapeMetrics;
 import net.explorviz.extension.heatmap.model.metrics.ClassActivity;
 import net.explorviz.extension.heatmap.model.metrics.ExportCoupling;
 import net.explorviz.extension.heatmap.model.metrics.ImportCoupling;
@@ -29,6 +30,7 @@ public class HeatmapApplication extends ResourceConfig {
     GenericTypeFinder.getTypeMap().putIfAbsent("ApplicationMetricCollection",
         ApplicationMetricCollection.class);
     GenericTypeFinder.getTypeMap().putIfAbsent("LandscapeMetrics", LandscapeMetrics.class);
+    GenericTypeFinder.getTypeMap().putIfAbsent("Heatmap", Heatmap.class);
     GenericTypeFinder.getTypeMap().putIfAbsent("InstanceCountMetric", InstanceCount.class);
     GenericTypeFinder.getTypeMap().putIfAbsent("ImportCouplingMetric", ImportCoupling.class);
     GenericTypeFinder.getTypeMap().putIfAbsent("ExportCouplingMetric", ExportCoupling.class);

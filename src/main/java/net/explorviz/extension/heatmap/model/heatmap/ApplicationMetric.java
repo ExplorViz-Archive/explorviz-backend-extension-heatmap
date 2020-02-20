@@ -1,5 +1,9 @@
-package net.explorviz.extension.heatmap.model;
+package net.explorviz.extension.heatmap.model.heatmap;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import com.github.jasminb.jsonapi.annotations.Relationship;
 import com.github.jasminb.jsonapi.annotations.Type;
 import java.util.ArrayList;
@@ -18,32 +22,25 @@ import net.explorviz.landscape.model.helper.ModelHelper;
  *
  */
 @Type("ApplicationMetric")
+@JsonIdentityInfo(generator = ObjectIdGenerators.StringIdGenerator.class, property = "super.id")
 public class ApplicationMetric extends BaseEntity {
 
-  @Relationship("metric")
-  private final Metric metric;
+  private final String metricName;
 
   @Relationship("classMetricValues")
-  private final List<ClazzMetric> classMetricValues;
+  private final List<ClazzMetric> classMetricValues = new ArrayList<>();
 
-  public Metric getMetric() {
-    return this.metric;
+  public ApplicationMetric(final String id, final Metric metric, final Application application) {
+    super(id);
+    this.metricName = metric.getName();
+    this.classMetricValues.addAll(this.computeApplicationMetrics(application, metric));
   }
 
-  public List<ClazzMetric> getClassMetricValues() {
-    return this.classMetricValues;
-  }
-
-
-  public ApplicationMetric(final Metric metric, final String applicationId,
-      final List<ClazzMetric> classMetricValues) {
-    this.metric = metric;
-    this.classMetricValues = classMetricValues;
-  }
-
-  public ApplicationMetric(final Metric metric, final Application application) {
-    this.metric = metric;
-    this.classMetricValues = this.computeApplicationMetrics(application);
+  @JsonCreator
+  public ApplicationMetric(@JsonProperty("id") final String id,
+      @JsonProperty("metricName") final String metricName) {
+    super(id);
+    this.metricName = metricName;
   }
 
   /**
@@ -52,7 +49,8 @@ public class ApplicationMetric extends BaseEntity {
    * @param application
    * @return
    */
-  private List<ClazzMetric> computeApplicationMetrics(final Application application) {
+  private List<ClazzMetric> computeApplicationMetrics(final Application application,
+      final Metric metric) {
     final List<ClazzMetric> clazzMetrics = new ArrayList<>();
 
     final List<Clazz> applicationClazzes = new ArrayList<>();
@@ -62,15 +60,23 @@ public class ApplicationMetric extends BaseEntity {
 
     for (final Clazz clazz : applicationClazzes) {
       clazzMetrics.add(new ClazzMetric(clazz.getFullQualifiedName(),
-          this.metric.computeMetric(clazz), this.metric.getName()));
+          metric.computeMetric(clazz));
     }
 
     return clazzMetrics;
   }
 
+  public String getMetricName() {
+    return this.metricName;
+  }
+
+  public List<ClazzMetric> getClassMetricValues() {
+    return this.classMetricValues;
+  }
+
   /**
    * Return the ClazzMetric with the given clazzName
-   * 
+   *
    * @param clazzName the full qualified name of the target clazz
    * @return
    */

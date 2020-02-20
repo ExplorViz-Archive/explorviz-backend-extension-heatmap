@@ -1,5 +1,9 @@
-package net.explorviz.extension.heatmap.model;
+package net.explorviz.extension.heatmap.model.heatmap;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import com.github.jasminb.jsonapi.annotations.Relationship;
 import com.github.jasminb.jsonapi.annotations.Type;
 import java.util.ArrayList;
@@ -19,19 +23,20 @@ import net.explorviz.landscape.model.landscape.System;
  *
  */
 @Type("LandscapeMetrics")
+@JsonIdentityInfo(generator = ObjectIdGenerators.StringIdGenerator.class, property = "super.id")
 public class LandscapeMetrics extends BaseEntity {
 
   // private static final Logger LOGGER = LoggerFactory.getLogger(LandscapeMetrics.class);
 
   private final Long timestamp;
 
-  private final List<String> applicationIds = new ArrayList<>();
+  // private final List<String> applicationIds = new ArrayList<>();
 
   @Relationship("metrics")
-  private final List<Metric> metrics;
+  private final List<Metric> metrics = new ArrayList<>();
 
   @Relationship("applicationMetricCollection")
-  private final List<ApplicationMetricCollection> aplicationMetricCollections;
+  private final List<ApplicationMetricCollection> aplicationMetricCollections = new ArrayList<>();
 
   /**
    * Create a new metric object with a list of metrics and a new ExplorViz landscape.
@@ -39,15 +44,23 @@ public class LandscapeMetrics extends BaseEntity {
    * @param metrics
    * @param landscape
    */
-  public LandscapeMetrics(final List<Metric> metrics, final Landscape landscape) {
-    this.metrics = metrics;
+  public LandscapeMetrics(final String id, final List<Metric> metrics, final Landscape landscape) {
+    super(id);
+    this.metrics.addAll(metrics);
     this.timestamp = landscape.getTimestamp().getTimestamp();
-    this.aplicationMetricCollections = this.computeApplicationMetrics(landscape);
+    this.aplicationMetricCollections.addAll(this.computeApplicationMetrics(landscape));
   }
 
-  public List<String> getApplicationIds() {
-    return this.applicationIds;
+  @JsonCreator
+  public LandscapeMetrics(@JsonProperty("id") final String id,
+      @JsonProperty("timestamp") final long timestamp) {
+    super(id);
+    this.timestamp = timestamp;
   }
+
+  // public List<String> getApplicationIds() {
+  // return this.applicationIds;
+  // }
 
   public Long getTimestamp() {
     return this.timestamp;
@@ -92,7 +105,7 @@ public class LandscapeMetrics extends BaseEntity {
     final List<Application> applications = this.findLandscapeApplications(landscape);
 
     for (final Application application : applications) {
-      this.applicationIds.add(application.getId());
+      // this.applicationIds.add(application.getId());
       appMetrics.add(new ApplicationMetricCollection(application, this.metrics));
     }
 

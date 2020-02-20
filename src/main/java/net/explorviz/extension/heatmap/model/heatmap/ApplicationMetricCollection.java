@@ -1,5 +1,9 @@
-package net.explorviz.extension.heatmap.model;
+package net.explorviz.extension.heatmap.model.heatmap;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import com.github.jasminb.jsonapi.annotations.Relationship;
 import com.github.jasminb.jsonapi.annotations.Type;
 import java.util.ArrayList;
@@ -9,27 +13,34 @@ import net.explorviz.landscape.model.application.Application;
 
 /**
  * Contains the values for all metrics and clazzes of a single application.
- * 
+ *
  * @author Tim-Niklas Reck
  *
  */
 @Type("ApplicationMetricCollection")
+@JsonIdentityInfo(generator = ObjectIdGenerators.StringIdGenerator.class, property = "super.id")
 public class ApplicationMetricCollection extends BaseEntity {
 
-  // @Relationship("appName")
   private final String appName;
-
-  // @Relationship("appID")
-  private final String appID;
+  private final String appId;
 
   @Relationship("metricValues")
-  private final List<ApplicationMetric> metricValues;
+  private final List<ApplicationMetric> metricValues = new ArrayList<>();
 
-
-  public ApplicationMetricCollection(final Application application, final List<Metric> metrics) {
+  public ApplicationMetricCollection(final String id, final Application application,
+      final List<Metric> metrics) {
+    super(id);
     this.appName = application.getName();
-    this.appID = application.getId();
-    this.metricValues = this.computeMetrics(application, metrics);
+    this.appId = application.getId();
+    this.metricValues.addAll(this.computeMetrics(application, metrics));
+  }
+
+  @JsonCreator
+  public ApplicationMetricCollection(@JsonProperty("id") final String id,
+      @JsonProperty("appName") final String appName, @JsonProperty("appId") final String appId) {
+    super(id);
+    this.appName = appName;
+    this.appId = appId;
   }
 
   /**
@@ -71,7 +82,7 @@ public class ApplicationMetricCollection extends BaseEntity {
   }
 
   public String getAppID() {
-    return this.appID;
+    return this.appId;
   }
 
   public List<ApplicationMetric> getMetricValues() {

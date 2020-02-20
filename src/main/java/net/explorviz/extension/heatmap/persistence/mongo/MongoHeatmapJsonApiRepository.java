@@ -47,7 +47,7 @@ public class MongoHeatmapJsonApiRepository implements HeatmapRepository<String> 
       heatmapCollection.insertOne(heatmapDocument);
     } catch (final MongoException e) {
       if (LOGGER.isErrorEnabled()) {
-        LOGGER.error("No document saved.");
+        LOGGER.error("No document saved: " + e.getMessage());
         return;
       }
     }

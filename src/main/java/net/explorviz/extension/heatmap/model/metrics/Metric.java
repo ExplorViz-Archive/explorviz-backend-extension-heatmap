@@ -1,7 +1,7 @@
 package net.explorviz.extension.heatmap.model.metrics;
 
 import com.github.jasminb.jsonapi.annotations.Type;
-import net.explorviz.extension.heatmap.model.BaseEntity;
+import net.explorviz.extension.heatmap.model.heatmap.BaseEntity;
 import net.explorviz.landscape.model.application.Clazz;
 
 /**
