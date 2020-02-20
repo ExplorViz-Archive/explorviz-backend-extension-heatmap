@@ -21,17 +21,13 @@ import net.explorviz.extension.heatmap.model.metrics.Metric;
 @JsonIdentityInfo(generator = ObjectIdGenerators.StringIdGenerator.class, property = "super.id")
 public class LandscapeMetrics extends BaseEntity {
 
-  // private static final Logger LOGGER = LoggerFactory.getLogger(LandscapeMetrics.class);
-
   private final Long timestamp;
-
-  // private final List<String> applicationIds = new ArrayList<>();
 
   @Relationship("metrics")
   private List<Metric> metrics = new ArrayList<>();
 
-  @Relationship("applicationMetricCollection")
-  private List<ApplicationMetricCollection> aplicationMetricCollections = new ArrayList<>();
+  @Relationship("applicationMetricCollections")
+  private List<ApplicationMetricCollection> applicationMetricCollections = new ArrayList<>();
 
   @JsonCreator
   public LandscapeMetrics(@JsonProperty("id") final String id,
@@ -40,20 +36,8 @@ public class LandscapeMetrics extends BaseEntity {
     this.timestamp = timestamp;
   }
 
-  // public List<String> getApplicationIds() {
-  // return this.applicationIds;
-  // }
-
   public Long getTimestamp() {
     return this.timestamp;
-  }
-
-  public List<ApplicationMetricCollection> getAplicationMetrics() {
-    return this.aplicationMetricCollections;
-  }
-
-  public List<Metric> getMetric() {
-    return this.metrics;
   }
 
   /**
@@ -65,7 +49,7 @@ public class LandscapeMetrics extends BaseEntity {
   public ApplicationMetricCollection getApplicationMetricCollectionByName(
       final String applicationName) {
     ApplicationMetricCollection appCollection = null;
-    for (final ApplicationMetricCollection tmpCollection : this.aplicationMetricCollections) {
+    for (final ApplicationMetricCollection tmpCollection : this.applicationMetricCollections) {
       if (tmpCollection.getAppName().equals(applicationName)) {
         appCollection = tmpCollection;
         break;
@@ -78,8 +62,8 @@ public class LandscapeMetrics extends BaseEntity {
     return this.metrics;
   }
 
-  public List<ApplicationMetricCollection> getAplicationMetricCollections() {
-    return this.aplicationMetricCollections;
+  public List<ApplicationMetricCollection> getApplicationMetricCollections() {
+    return this.applicationMetricCollections;
   }
 
   public void setMetrics(final List<Metric> metrics) {
@@ -87,8 +71,8 @@ public class LandscapeMetrics extends BaseEntity {
   }
 
   public void setAplicationMetricCollections(
-      final List<ApplicationMetricCollection> aplicationMetricCollections) {
-    this.aplicationMetricCollections = aplicationMetricCollections;
+      final List<ApplicationMetricCollection> applicationMetricCollections) {
+    this.applicationMetricCollections = applicationMetricCollections;
   }
 
 }

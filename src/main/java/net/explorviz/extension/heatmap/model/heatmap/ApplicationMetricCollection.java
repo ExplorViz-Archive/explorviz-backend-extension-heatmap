@@ -53,16 +53,12 @@ public class ApplicationMetricCollection extends BaseEntity {
     return this.appName;
   }
 
-  public String getAppID() {
+  public String getAppId() {
     return this.appId;
   }
 
   public List<ApplicationMetric> getMetricValues() {
     return this.metricValues;
-  }
-
-  public String getAppId() {
-    return this.appId;
   }
 
   public void setMetricValues(final List<ApplicationMetric> metricValues) {

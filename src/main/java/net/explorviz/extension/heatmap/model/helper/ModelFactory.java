@@ -175,11 +175,11 @@ public class ModelFactory {
    * @param aggregatedMap
    * @return
    */
-  public LandscapeMetrics aggregateHeatmaps(final LandscapeMetrics newMap,
+  private LandscapeMetrics aggregateHeatmaps(final LandscapeMetrics newMap,
       final LandscapeMetrics aggregatedMap) {
     // First loop: For all applications ...
     for (final ApplicationMetricCollection appCollection : newMap
-        .getAplicationMetricCollections()) {
+        .getApplicationMetricCollections()) {
       final ApplicationMetricCollection aggregatedCollection =
           aggregatedMap.getApplicationMetricCollectionByName(appCollection.getAppName());
       if (aggregatedCollection == null) {
@@ -216,11 +216,11 @@ public class ModelFactory {
    * @param oldMetrics
    * @return
    */
-  public LandscapeMetrics computeDifference(final LandscapeMetrics newMetrics,
+  private LandscapeMetrics computeDifference(final LandscapeMetrics newMetrics,
       final LandscapeMetrics oldMetrics) {
     // First loop: For all applications ...
     for (final ApplicationMetricCollection appCollection : newMetrics
-        .getAplicationMetricCollections()) {
+        .getApplicationMetricCollections()) {
       final ApplicationMetricCollection comparedCollection =
           oldMetrics.getApplicationMetricCollectionByName(appCollection.getAppName());
       if (comparedCollection == null) {

@@ -13,7 +13,6 @@ import net.explorviz.extension.heatmap.model.heatmap.LandscapeMetrics;
 import net.explorviz.extension.heatmap.model.helper.ModelFactory;
 import net.explorviz.extension.heatmap.persistence.mongo.HeatmapSerializationHelper;
 import net.explorviz.extension.heatmap.persistence.mongo.MongoHeatmapJsonApiRepository;
-import net.explorviz.extension.heatmap.persistence.mongo.MongoHeatmapRepository;
 import net.explorviz.extension.heatmap.persistence.mongo.MongoLandscapeMetricsRepository;
 import net.explorviz.landscape.model.landscape.Landscape;
 import net.explorviz.shared.config.annotations.Config;
@@ -41,7 +40,7 @@ public class KafkaLandscapeExchangeService implements Runnable {
   // private final LandscapeMetricsSerializationHelper landscapeMetricsSerializationHelper;
 
   private final MongoHeatmapJsonApiRepository mongoHeatmapJsonApiRepo;
-  private final MongoHeatmapRepository mongoHeatmapRepo;
+  // private final MongoHeatmapRepository mongoHeatmapRepo;
   private final MongoLandscapeMetricsRepository mongoMetricRepo;
 
   private final HeatmapService heatmapService;
@@ -62,7 +61,7 @@ public class KafkaLandscapeExchangeService implements Runnable {
       final HeatmapSerializationHelper heatmapSerializationHelper,
       // final LandscapeMetricsSerializationHelper landscapeMetricsSerializationHelper,
       final MongoHeatmapJsonApiRepository mongoHeatmapJsonApiRepo,
-      final MongoHeatmapRepository mongoHeatmapRepo,
+      // final MongoHeatmapRepository mongoHeatmapRepo,
       final MongoLandscapeMetricsRepository mongoMetricRepo,
       final HeatmapService heatmapService,
       final ModelFactory modelFactory,
@@ -75,7 +74,7 @@ public class KafkaLandscapeExchangeService implements Runnable {
     // this.landscapeMetricsSerializationHelper = landscapeMetricsSerializationHelper;
     this.modelFactory = modelFactory;
     this.mongoHeatmapJsonApiRepo = mongoHeatmapJsonApiRepo;
-    this.mongoHeatmapRepo = mongoHeatmapRepo;
+    // this.mongoHeatmapRepo = mongoHeatmapRepo;
     this.mongoMetricRepo = mongoMetricRepo;
     this.heatmapService = heatmapService;
     this.kafkaTopic = kafkaTopic;
@@ -137,8 +136,8 @@ public class KafkaLandscapeExchangeService implements Runnable {
         // -- 3. serialize heatmap for transmission and persistence
         String serializedHeatmap = null;
         try {
-          LOGGER.info("Trying to serialize {}", heatmap.getId());
           serializedHeatmap = this.heatmapSerializationHelper.serialize(heatmap);
+          LOGGER.info("Serialized {}", heatmap.getId());
         } catch (final DocumentSerializationException e) {
           if (LOGGER.isErrorEnabled()) {
             LOGGER.error("Could not serialize document. No document broadcasted.");
