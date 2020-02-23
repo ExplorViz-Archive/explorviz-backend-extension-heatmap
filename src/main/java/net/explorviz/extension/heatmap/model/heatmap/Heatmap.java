@@ -13,12 +13,15 @@ import com.github.jasminb.jsonapi.annotations.Type;
  * @author Tim-Niklas Reck
  *
  */
-@Type("Heatmap")
+@Type("heatmap")
 @JsonIdentityInfo(generator = ObjectIdGenerators.StringIdGenerator.class, property = "super.id")
 public class Heatmap extends BaseEntity {
 
-  private final int windowsize;
+  private final long windowsize;
   private final long timestamp;
+
+  // The id of the corresponding landscape.
+  private final String landscapeId;
 
   @Relationship("aggregatedHeatmap")
   private LandscapeMetrics aggregatedHeatmap;
@@ -28,10 +31,12 @@ public class Heatmap extends BaseEntity {
   @JsonCreator
   public Heatmap(@JsonProperty("id") final String id,
       @JsonProperty("windowsize") final int windowsize,
-      @JsonProperty("timestamp") final long timestamp) {
+      @JsonProperty("timestamp") final long timestamp,
+      @JsonProperty("landscapeId") final String landscapeId) {
     super(id);
     this.windowsize = windowsize;
     this.timestamp = timestamp;
+    this.landscapeId = landscapeId;
   }
 
   public long getTimestamp() {
@@ -50,8 +55,12 @@ public class Heatmap extends BaseEntity {
     return this.windowedHeatmap;
   }
 
-  public int getWindowsize() {
+  public long getWindowsize() {
     return this.windowsize;
+  }
+
+  public String getLandscapeId() {
+    return this.landscapeId;
   }
 
   public void setWindowedHeatmap(final LandscapeMetrics windowedHeatmap) {

@@ -49,26 +49,27 @@ public class ModelFactory {
     this.metrics.add(new ClassActivity(this.idGen.generateId()));
   }
 
-  public LandscapeMetrics createLandscapeMetrics(final Landscape l) {
+  /**
+   * Create and initialize a new {@link LandscapeMetrics} and generate a new id for it.
+   *
+   * @param landscape
+   * @return
+   */
+  public LandscapeMetrics createLandscapeMetrics(final Landscape landscape) {
     final LandscapeMetrics lmetrics =
-        new LandscapeMetrics(this.idGen.generateId(), l.getTimestamp().getTimestamp());
+        new LandscapeMetrics(this.idGen.generateId(), landscape.getTimestamp().getTimestamp(),
+            landscape.getId());
     lmetrics.setMetrics(this.metrics);
-    final List<ApplicationMetricCollection> appMetricCollection =
-        this.computeApplicationMetricsCollection(l);
-    lmetrics.setAplicationMetricCollections(appMetricCollection);
+    // lmetrics.setParent(null);
+    final List<ApplicationMetricCollection> appMetricCollections =
+        this.computeApplicationMetricsCollection(landscape);
+    lmetrics.setApplicationMetricCollections(appMetricCollections);
     return lmetrics;
   }
 
-  public ApplicationMetric createApplicationMetric(final Application application,
-      final Metric metric) {
-    final ApplicationMetric appMetric =
-        new ApplicationMetric(this.idGen.generateId(), metric.getName());
-    appMetric.setClassMetricValues(this.computeApplicationMetrics(application, metric));
-    return appMetric;
-  }
 
   /**
-   * Create a new metric object with a list of metrics and a new ExplorViz landscape.
+   * Create and initialize a new {@link ApplicationMetricCollection} and generate a new id for it.
    *
    * @param metrics
    * @param landscape
@@ -86,6 +87,22 @@ public class ModelFactory {
   }
 
   /**
+   * Create and initialize a new {@link ApplicationMetric} and generate a new id for it.
+   *
+   * @param application
+   * @param metric
+   * @return
+   */
+  public ApplicationMetric createApplicationMetric(final Application application,
+      final Metric metric) {
+    final ApplicationMetric appMetric =
+        new ApplicationMetric(this.idGen.generateId(), metric.getName());
+    appMetric.setClassMetricValues(this.computeApplicationMetrics(application, metric));
+    return appMetric;
+  }
+
+
+  /**
    * Create a new heatmap based on the given landscape metrics. The windowsize defined in
    * "explorviz.properties" should be at least 2. Otherwise it will just show the current metric.
    *
@@ -98,16 +115,87 @@ public class ModelFactory {
 
     final int windowsize = PropertyHelper.getIntegerProperty("heatmap.window.size");
     final Heatmap heatmap =
-        new Heatmap(this.idGen.generateId(), windowsize, lmetrics.getTimestamp());
+        new Heatmap(this.idGen.generateId(), windowsize, lmetrics.getTimestamp(),
+            lmetrics.getLandscapeId());
 
-    final LandscapeMetrics aggregatedHeatmap = this.computeAggregatedHeatmap(lmetrics,
-        this.mongoHeatmapRepo.getByTimestamp(previousTimestamp));
-    heatmap.setAggregatedHeatmap(aggregatedHeatmap);
-
-    final LandscapeMetrics windowedHeatmap = this.computeWindowHeatmap(lmetrics,
+    final LandscapeMetrics aggregatedHeatmap =
+        this.computeAggregatedHeatmap(this.deepCopy(lmetrics),
+            this.mongoHeatmapRepo.getByTimestamp(previousTimestamp));
+    final LandscapeMetrics windowedHeatmap = this.computeWindowHeatmap(this.deepCopy(lmetrics),
         this.mongoMetricRepo.getNthLastRecord(windowsize), windowsize);
+
+    // System.out.println(lmetrics.getId());
+    // System.out.println(aggregatedHeatmap.getId());
+    // System.out.println(windowedHeatmap.getId());
+    // System.out.println("########################");
+
+    // aggregatedHeatmap.setParent(heatmap);
+    // windowedHeatmap.setParent(heatmap);
+
+    heatmap.setAggregatedHeatmap(aggregatedHeatmap);
     heatmap.setWindowedHeatmap(windowedHeatmap);
+
     return heatmap;
+  }
+
+
+  /**
+   * Creates a deep copy of a {@link LandscapeMetrics} object.
+   *
+   * @param landscapeMetrics
+   * @return
+   */
+  public LandscapeMetrics deepCopy(final LandscapeMetrics landscapeMetrics) {
+    final LandscapeMetrics lmetrics =
+        new LandscapeMetrics(this.idGen.generateId(), landscapeMetrics.getTimestamp(),
+            landscapeMetrics.getLandscapeId());
+    lmetrics.setMetrics(this.metrics);
+    final List<ApplicationMetricCollection> appMetricCollections = new ArrayList<>();
+    for (final ApplicationMetricCollection collection : landscapeMetrics
+        .getApplicationMetricCollections()) {
+      appMetricCollections.add(this.deepCopy(collection));
+    }
+    lmetrics.setApplicationMetricCollections(appMetricCollections);
+    return lmetrics;
+  }
+
+  /**
+   * Creates a deep copy of a {@link ApplicationMetricCollection} object.
+   *
+   * @param applicationMetricCollection
+   * @return
+   */
+  public ApplicationMetricCollection deepCopy(
+      final ApplicationMetricCollection applicationMetricCollection) {
+    final ApplicationMetricCollection appCollection =
+        new ApplicationMetricCollection(this.idGen.generateId(),
+            applicationMetricCollection.getAppName(), applicationMetricCollection.getAppId());
+    final List<ApplicationMetric> appMetrics = new ArrayList<>();
+    for (final ApplicationMetric appMetric : applicationMetricCollection.getMetricValues()) {
+      appMetrics.add(this.deepCopy(appMetric));
+    }
+    appCollection.setMetricValues(appMetrics);
+    return appCollection;
+  }
+
+
+  /**
+   * Creates a deep copy of a {@link ApplicationMetric} object.
+   *
+   * @param applicationMetricCollection
+   * @return
+   */
+  public ApplicationMetric deepCopy(
+      final ApplicationMetric applicationMetric) {
+    final ApplicationMetric appMetric =
+        new ApplicationMetric(this.idGen.generateId(), applicationMetric.getMetricName());
+
+    final List<ClazzMetric> clazzMetrics = new ArrayList<>();
+    for (final ClazzMetric clazzMetric : applicationMetric.getClassMetricValues()) {
+      clazzMetrics.add(this.createClazzMetric(clazzMetric.getClazzName(), clazzMetric.getValue()));
+    }
+    appMetric.setClassMetricValues(clazzMetrics);
+    return appMetric;
   }
 
   /**
@@ -175,10 +263,10 @@ public class ModelFactory {
    * @param aggregatedMap
    * @return
    */
-  private LandscapeMetrics aggregateHeatmaps(final LandscapeMetrics newMap,
+  private LandscapeMetrics aggregateHeatmaps(final LandscapeMetrics lmetrics,
       final LandscapeMetrics aggregatedMap) {
     // First loop: For all applications ...
-    for (final ApplicationMetricCollection appCollection : newMap
+    for (final ApplicationMetricCollection appCollection : lmetrics
         .getApplicationMetricCollections()) {
       final ApplicationMetricCollection aggregatedCollection =
           aggregatedMap.getApplicationMetricCollectionByName(appCollection.getAppName());
@@ -194,32 +282,26 @@ public class ModelFactory {
           final ClazzMetric aggregatedClazz =
               aggregatedMetric.getClazzMetricByName(clazzMetric.getClazzName());
           if (aggregatedClazz != null) {
-            // ... set value to half of the old value and add the new value if an old value exists.
-            aggregatedClazz.decayAndAddValue(clazzMetric.getValue());
-          } else {
-            // ... or to the new value if there was no old value.
-            aggregatedMetric.getClassMetricValues()
-                .add(this.createClazzMetric(clazzMetric.getClazzName(),
-                    clazzMetric.getValue()));
+            // ... add half of the old value to the new one.
+            clazzMetric.addValue(0.5 * aggregatedClazz.getValue());
           }
         }
       }
     }
-    return aggregatedMap;
+    return lmetrics;
   }
 
   /**
    * Compute the difference between the same classes of each metric object and return an object
-   * containing the difference. If a class is not present in the old object it is added and treated
-   * as if the old value was 0.
+   * containing the difference.
    *
    * @param oldMetrics
    * @return
    */
-  private LandscapeMetrics computeDifference(final LandscapeMetrics newMetrics,
+  private LandscapeMetrics computeDifference(final LandscapeMetrics lmetrics,
       final LandscapeMetrics oldMetrics) {
     // First loop: For all applications ...
-    for (final ApplicationMetricCollection appCollection : newMetrics
+    for (final ApplicationMetricCollection appCollection : lmetrics
         .getApplicationMetricCollections()) {
       final ApplicationMetricCollection comparedCollection =
           oldMetrics.getApplicationMetricCollectionByName(appCollection.getAppName());
@@ -236,18 +318,12 @@ public class ModelFactory {
               comparedMetric.getClazzMetricByName(clazzMetric.getClazzName());
           if (comparedClazz != null) {
             // ... set value to half of the old value and add the new value if an old value exists.
-            comparedClazz.subtractValue(clazzMetric.getValue());
-          } else {
-            // ... or to the new value if there was no old value.
-            comparedMetric.getClassMetricValues()
-                .add(this.createClazzMetric(clazzMetric.getClazzName(),
-                    clazzMetric.getValue()));
+            clazzMetric.subtractValue(comparedClazz.getValue());
           }
-
         }
       }
     }
-    return oldMetrics;
+    return lmetrics;
   }
 
   /**

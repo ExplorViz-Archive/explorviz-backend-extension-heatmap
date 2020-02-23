@@ -7,7 +7,7 @@ import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import com.github.jasminb.jsonapi.annotations.Type;
 import net.explorviz.landscape.model.application.Clazz;
 
-@Type("ImportCoupling")
+@Type("importCoupling")
 @JsonIdentityInfo(generator = ObjectIdGenerators.StringIdGenerator.class, property = "super.id")
 public class ImportCoupling extends Metric {
 

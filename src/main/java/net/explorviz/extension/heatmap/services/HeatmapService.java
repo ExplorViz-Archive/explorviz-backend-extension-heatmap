@@ -41,13 +41,13 @@ public class HeatmapService {
    * Broadcast new JSON-API compliant stringified landscape metrics landscape to all registered
    * clients.
    *
-   * @param jsonApiLandscapeMetrics
+   * @param jsonApiHeatmap
    */
-  public void broadcastLandscapeMetric(final String jsonApiLandscapeMetrics) {
+  public void broadcastHeatmap(final String jsonApiHeatmap) {
     final OutboundSseEvent event = this.sse.newEventBuilder()
         .name(SSE_EVENT_NAME)
         .mediaType(APPLICATION_JSON_API_TYPE)
-        .data(jsonApiLandscapeMetrics)
+        .data(jsonApiHeatmap)
         .build();
 
     this.broadcaster.broadcast(event);

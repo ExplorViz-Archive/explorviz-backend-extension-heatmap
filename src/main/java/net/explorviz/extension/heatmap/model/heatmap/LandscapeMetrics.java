@@ -17,11 +17,17 @@ import net.explorviz.extension.heatmap.model.metrics.Metric;
  * @author Tim-Niklas Reck
  *
  */
-@Type("LandscapeMetrics")
+@Type("landscapeMetrics")
 @JsonIdentityInfo(generator = ObjectIdGenerators.StringIdGenerator.class, property = "super.id")
 public class LandscapeMetrics extends BaseEntity {
 
   private final Long timestamp;
+
+  // The id of the corresponding landscape.
+  private final String landscapeId;
+
+  // @Relationship("parent")
+  // private Heatmap parent;
 
   @Relationship("metrics")
   private List<Metric> metrics = new ArrayList<>();
@@ -31,10 +37,20 @@ public class LandscapeMetrics extends BaseEntity {
 
   @JsonCreator
   public LandscapeMetrics(@JsonProperty("id") final String id,
-      @JsonProperty("timestamp") final long timestamp) {
+      @JsonProperty("timestamp") final long timestamp,
+      @JsonProperty("landscapeId") final String landscapeId) {
     super(id);
     this.timestamp = timestamp;
+    this.landscapeId = landscapeId;
   }
+
+  public String getLandscapeId() {
+    return this.landscapeId;
+  }
+
+  // public Heatmap getParent() {
+  // return this.parent;
+  // }
 
   public Long getTimestamp() {
     return this.timestamp;
@@ -70,7 +86,11 @@ public class LandscapeMetrics extends BaseEntity {
     this.metrics = metrics;
   }
 
-  public void setAplicationMetricCollections(
+  // public void setParent(final Heatmap parent) {
+  // this.parent = parent;
+  // }
+
+  public void setApplicationMetricCollections(
       final List<ApplicationMetricCollection> applicationMetricCollections) {
     this.applicationMetricCollections = applicationMetricCollections;
   }

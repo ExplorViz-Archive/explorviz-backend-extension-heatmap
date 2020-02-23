@@ -1,9 +1,6 @@
 package net.explorviz.extension.heatmap.services;
 
 import com.github.jasminb.jsonapi.exceptions.DocumentSerializationException;
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.time.Duration;
 import java.util.Arrays;
 import java.util.Properties;
@@ -97,11 +94,11 @@ public class KafkaLandscapeExchangeService implements Runnable {
 
     this.kafkaConsumer.subscribe(Arrays.asList(this.kafkaTopic));
 
-    String ls = null;
-    try {
-      ls = new String(Files.readAllBytes(Paths.get("G:/Masterarbeit/landscape0.txt")));
-    } catch (final IOException e) {
-    }
+    // String ls = null;
+    // try {
+    // ls = new String(Files.readAllBytes(Paths.get("G:/Masterarbeit/landscape0.txt")));
+    // } catch (final IOException e) {
+    // }
 
     while (true) {
 
@@ -110,17 +107,17 @@ public class KafkaLandscapeExchangeService implements Runnable {
 
       for (final ConsumerRecord<String, String> record : records) {
 
-        // LOGGER.debug("Recevied landscape Kafka record: {}", record.value());
+        LOGGER.debug("Recevied landscape Kafka record: {}", record.value());
 
-        String serializedLandscape = record.value();
-        if (ls != null) {
-          serializedLandscape = ls;
-        }
+        final String serializedLandscape = record.value();
+        // if (ls != null) {
+        // serializedLandscape = ls;
+        // }
 
         Landscape l;
         try {
           l = this.serializationHelper.deserialize(serializedLandscape);
-          LOGGER.info("Deserialized landscape with id {}:", l.getId());
+          LOGGER.debug("Deserialized landscape with id: {}", l.getId());
         } catch (final DocumentSerializationException e) {
           LOGGER.error("Could not deserialize landscape with value {}", serializedLandscape, e);
           continue;
@@ -129,6 +126,7 @@ public class KafkaLandscapeExchangeService implements Runnable {
 
         // -- 1. compute metrics for landscape
         final LandscapeMetrics lmetrics = this.modelFactory.createLandscapeMetrics(l);
+        // LOGGER.info("Computed metrics for landscape with id: {}", l.getId());
 
         // -- 2. compute heatmap with the new lmetrics
         final Heatmap heatmap = this.modelFactory.createHeatmap(lmetrics, this.previousTimestamp);
@@ -137,13 +135,12 @@ public class KafkaLandscapeExchangeService implements Runnable {
         String serializedHeatmap = null;
         try {
           serializedHeatmap = this.heatmapSerializationHelper.serialize(heatmap);
-          LOGGER.info("Serialized {}", heatmap.getId());
+          LOGGER.debug("Serialized {}.", heatmap.getId());
         } catch (final DocumentSerializationException e) {
           if (LOGGER.isErrorEnabled()) {
             LOGGER.error("Could not serialize document. No document broadcasted.");
           }
         }
-        // LOGGER.info("Computed metrics for landscape with id: {}", l.getId());
 
         if (serializedHeatmap != null) {
           // -- 4. persist heatmap and lmetrics into db
@@ -152,8 +149,8 @@ public class KafkaLandscapeExchangeService implements Runnable {
           this.mongoMetricRepo.save(lmetrics.getId(), lmetrics.getTimestamp(), lmetrics);
 
           // 6. broadcast serialized heatmap to clients (similar to broadcast service)
-          LOGGER.debug("Broadcasting landscape with id: {}", l.getId());
-          this.heatmapService.broadcastLandscapeMetric(serializedHeatmap);
+          LOGGER.debug("Broadcasting landscape with timestamp: {}", heatmap.getTimestamp());
+          this.heatmapService.broadcastHeatmap(serializedHeatmap);
         }
 
         // Save this timestamp for following loop executions.

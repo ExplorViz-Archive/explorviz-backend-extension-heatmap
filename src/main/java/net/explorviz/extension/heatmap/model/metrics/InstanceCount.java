@@ -7,7 +7,7 @@ import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import com.github.jasminb.jsonapi.annotations.Type;
 import net.explorviz.landscape.model.application.Clazz;
 
-@Type("InstanceCount")
+@Type("instanceCount")
 @JsonIdentityInfo(generator = ObjectIdGenerators.StringIdGenerator.class, property = "super.id")
 public class InstanceCount extends Metric {
 

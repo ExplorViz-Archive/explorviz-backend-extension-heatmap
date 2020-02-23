@@ -14,7 +14,7 @@ import net.explorviz.landscape.model.application.Clazz;
  * @author Tim-Niklas Reck
  *
  */
-@Type("Metric")
+@Type("metric")
 @JsonIdentityInfo(generator = ObjectIdGenerators.StringIdGenerator.class, property = "super.id")
 public abstract class Metric extends BaseEntity {
 

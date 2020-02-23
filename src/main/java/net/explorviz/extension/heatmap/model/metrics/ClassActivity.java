@@ -7,7 +7,7 @@ import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import com.github.jasminb.jsonapi.annotations.Type;
 import net.explorviz.landscape.model.application.Clazz;
 
-@Type("ClassActivity")
+@Type("classActivity")
 @JsonIdentityInfo(generator = ObjectIdGenerators.StringIdGenerator.class, property = "super.id")
 public class ClassActivity extends Metric {
 

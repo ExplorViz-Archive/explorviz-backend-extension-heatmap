@@ -12,7 +12,7 @@ import com.github.jasminb.jsonapi.annotations.Type;
  * @author Tim-Niklas Reck
  *
  */
-@Type("ClazzMetric")
+@Type("clazzMetric")
 @JsonIdentityInfo(generator = ObjectIdGenerators.StringIdGenerator.class, property = "super.id")
 public class ClazzMetric extends BaseEntity {
 
@@ -29,21 +29,21 @@ public class ClazzMetric extends BaseEntity {
   }
 
   /**
-   * Decay this value by 0.5 and add new value.
+   * Add the new value to the old one.
    *
    * @param value
    */
-  public void decayAndAddValue(final double value) {
-    this.value = this.value * 0.5 + value;
+  public void addValue(final double value) {
+    this.value += value;
   }
 
   /**
-   * Subtract the existing value from the new one.
+   * Subtract the new value from the old one.
    *
-   * @param value
+   * @param value the value to substract
    */
   public void subtractValue(final double value) {
-    this.value = value - this.value;
+    this.value -= value;
   }
 
   public String getClazzName() {

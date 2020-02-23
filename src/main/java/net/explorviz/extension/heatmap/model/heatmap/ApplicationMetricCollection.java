@@ -15,7 +15,7 @@ import java.util.List;
  * @author Tim-Niklas Reck
  *
  */
-@Type("ApplicationMetricCollection")
+@Type("applicationMetricCollection")
 @JsonIdentityInfo(generator = ObjectIdGenerators.StringIdGenerator.class, property = "super.id")
 public class ApplicationMetricCollection extends BaseEntity {
 
