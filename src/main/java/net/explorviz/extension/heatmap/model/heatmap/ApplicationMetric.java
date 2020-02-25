@@ -20,20 +20,20 @@ import java.util.List;
 @JsonIdentityInfo(generator = ObjectIdGenerators.StringIdGenerator.class, property = "super.id")
 public class ApplicationMetric extends BaseEntity {
 
-  private final String metricName;
+  private final String metricType;
 
   @Relationship("classMetricValues")
   private List<ClazzMetric> classMetricValues = new ArrayList<>();
 
   @JsonCreator
   public ApplicationMetric(@JsonProperty("id") final String id,
-      @JsonProperty("metricName") final String metricName) {
+      @JsonProperty("metricType") final String metricType) {
     super(id);
-    this.metricName = metricName;
+    this.metricType = metricType;
   }
 
-  public String getMetricName() {
-    return this.metricName;
+  public String getMetricType() {
+    return this.metricType;
   }
 
   public List<ClazzMetric> getClassMetricValues() {

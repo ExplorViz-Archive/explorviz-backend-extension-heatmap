@@ -13,14 +13,14 @@ public class ImportCoupling extends Metric {
 
   @JsonCreator
   public ImportCoupling(@JsonProperty("id") final String id) {
-    super(id, "import coupling",
+    super(id, "importCoupling", "import coupling",
         "Total number of messages sent by all methods in all objects of a class.");
   }
 
   @Override
-  public int computeMetric(final Clazz clazz) {
+  public double computeMetric(final Clazz clazz) {
     // TODO Auto-generated method stub
-    return 0;
+    return Math.round(Math.random() * 100 - 50);
   }
 
 }

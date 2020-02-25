@@ -11,6 +11,8 @@ import net.explorviz.extension.heatmap.model.heatmap.ClazzMetric;
 import net.explorviz.extension.heatmap.model.heatmap.Heatmap;
 import net.explorviz.extension.heatmap.model.heatmap.LandscapeMetrics;
 import net.explorviz.extension.heatmap.model.metrics.ClassActivity;
+import net.explorviz.extension.heatmap.model.metrics.ExportCoupling;
+import net.explorviz.extension.heatmap.model.metrics.ImportCoupling;
 import net.explorviz.extension.heatmap.model.metrics.InstanceCount;
 import net.explorviz.extension.heatmap.model.metrics.Metric;
 import net.explorviz.extension.heatmap.persistence.mongo.MongoHeatmapRepository;
@@ -47,6 +49,8 @@ public class ModelFactory {
 
     this.metrics.add(new InstanceCount(this.idGen.generateId()));
     this.metrics.add(new ClassActivity(this.idGen.generateId()));
+    this.metrics.add(new ImportCoupling(this.idGen.generateId()));
+    this.metrics.add(new ExportCoupling(this.idGen.generateId()));
   }
 
   /**
@@ -96,7 +100,7 @@ public class ModelFactory {
   public ApplicationMetric createApplicationMetric(final Application application,
       final Metric metric) {
     final ApplicationMetric appMetric =
-        new ApplicationMetric(this.idGen.generateId(), metric.getName());
+        new ApplicationMetric(this.idGen.generateId(), metric.getTypeName());
     appMetric.setClassMetricValues(this.computeApplicationMetrics(application, metric));
     return appMetric;
   }
@@ -124,16 +128,14 @@ public class ModelFactory {
     final LandscapeMetrics windowedHeatmap = this.computeWindowHeatmap(this.deepCopy(lmetrics),
         this.mongoMetricRepo.getNthLastRecord(windowsize), windowsize);
 
-    // System.out.println(lmetrics.getId());
-    // System.out.println(aggregatedHeatmap.getId());
-    // System.out.println(windowedHeatmap.getId());
-    // System.out.println("########################");
-
-    // aggregatedHeatmap.setParent(heatmap);
-    // windowedHeatmap.setParent(heatmap);
-
     heatmap.setAggregatedHeatmap(aggregatedHeatmap);
     heatmap.setWindowedHeatmap(windowedHeatmap);
+
+    final List<String> metricTypes = new ArrayList<>();
+    for (final Metric metric : this.metrics) {
+      metricTypes.add(metric.getTypeName());
+    }
+    heatmap.setMetricTypes(metricTypes);
 
     return heatmap;
   }
@@ -188,7 +190,7 @@ public class ModelFactory {
   public ApplicationMetric deepCopy(
       final ApplicationMetric applicationMetric) {
     final ApplicationMetric appMetric =
-        new ApplicationMetric(this.idGen.generateId(), applicationMetric.getMetricName());
+        new ApplicationMetric(this.idGen.generateId(), applicationMetric.getMetricType());
 
     final List<ClazzMetric> clazzMetrics = new ArrayList<>();
     for (final ClazzMetric clazzMetric : applicationMetric.getClassMetricValues()) {
@@ -276,7 +278,7 @@ public class ModelFactory {
       // Second loop: ... for all metrics ...
       for (final ApplicationMetric appMetric : appCollection.getMetricValues()) {
         final ApplicationMetric aggregatedMetric =
-            aggregatedCollection.getByMetricName(appMetric.getMetricName());
+            aggregatedCollection.getByMetricType(appMetric.getMetricType());
         // Third loop: ... for all clazzes ...
         for (final ClazzMetric clazzMetric : appMetric.getClassMetricValues()) {
           final ClazzMetric aggregatedClazz =
@@ -311,7 +313,7 @@ public class ModelFactory {
       // Second loop: ... for all metrics ...
       for (final ApplicationMetric appMetric : appCollection.getMetricValues()) {
         final ApplicationMetric comparedMetric =
-            comparedCollection.getByMetricName(appMetric.getMetricName());
+            comparedCollection.getByMetricType(appMetric.getMetricType());
         // Third loop: ... for all clazzes ...
         for (final ClazzMetric clazzMetric : appMetric.getClassMetricValues()) {
           final ClazzMetric comparedClazz =

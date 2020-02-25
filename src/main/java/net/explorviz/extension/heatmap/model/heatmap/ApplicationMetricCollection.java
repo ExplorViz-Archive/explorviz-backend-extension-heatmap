@@ -36,13 +36,13 @@ public class ApplicationMetricCollection extends BaseEntity {
   /**
    * Return the metric clazz values of the application for one specific metric.
    *
-   * @param metricName the name of the metric
+   * @param metricType the name of the metric
    * @return the application metric object or null if there is no object for the given metric.
    */
-  public ApplicationMetric getByMetricName(final String metricName) {
+  public ApplicationMetric getByMetricType(final String metricType) {
     ApplicationMetric tmpMetric = null;
     for (final ApplicationMetric appMetric : this.metricValues) {
-      if (appMetric.getMetricName().equals(metricName)) {
+      if (appMetric.getMetricType().equals(metricType)) {
         tmpMetric = appMetric;
       }
     }

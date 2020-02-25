@@ -13,11 +13,11 @@ public class InstanceCount extends Metric {
 
   @JsonCreator
   public InstanceCount(@JsonProperty("id") final String id) {
-    super(id, "instance count", "The number of instances of a class.");
+    super(id, "instanceCount", "instance count", "The number of instances of a class.");
   }
 
   @Override
-  public int computeMetric(final Clazz clazz) {
+  public double computeMetric(final Clazz clazz) {
     return clazz.getInstanceCount();
   }
 

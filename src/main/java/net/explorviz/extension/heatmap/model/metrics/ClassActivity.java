@@ -13,13 +13,14 @@ public class ClassActivity extends Metric {
 
   @JsonCreator
   public ClassActivity(@JsonProperty("id") final String id) {
-    super(id, "class activity", "Combined metric for messages and number of instances.");
+    super(id, "classActivity", "class activity",
+        "Combined metric for messages and number of instances.");
   }
 
   @Override
-  public int computeMetric(final Clazz clazz) {
+  public double computeMetric(final Clazz clazz) {
     // TODO Auto-generated method stub
-    return 0;
+    return Math.round(Math.random() * 100 - 50);
   }
 
 }

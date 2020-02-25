@@ -18,16 +18,23 @@ import net.explorviz.landscape.model.application.Clazz;
 @JsonIdentityInfo(generator = ObjectIdGenerators.StringIdGenerator.class, property = "super.id")
 public abstract class Metric extends BaseEntity {
 
+  private final String typeName;
   private final String name;
-
   private final String description;
 
   @JsonCreator
-  public Metric(@JsonProperty("id") final String id, @JsonProperty("name") final String name,
+  public Metric(@JsonProperty("id") final String id,
+      @JsonProperty("typeName") final String typeName,
+      @JsonProperty("name") final String name,
       @JsonProperty("desc") final String desc) {
     super(id);
+    this.typeName = typeName;
     this.name = name;
     this.description = desc;
+  }
+
+  public String getTypeName() {
+    return this.typeName;
   }
 
   public String getName() {
@@ -38,11 +45,10 @@ public abstract class Metric extends BaseEntity {
     return this.description;
   }
 
-
   /**
    * The logic which is used to compute the specified metric for a given class;
    *
    * @return The value of the metric for the given clazz.
    */
-  public abstract int computeMetric(Clazz clazz);
+  public abstract double computeMetric(Clazz clazz);
 }

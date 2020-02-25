@@ -6,6 +6,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import com.github.jasminb.jsonapi.annotations.Relationship;
 import com.github.jasminb.jsonapi.annotations.Type;
+import java.util.List;
 
 /**
  * Contains the model for the heatmap respresentations of a landscape.
@@ -19,6 +20,8 @@ public class Heatmap extends BaseEntity {
 
   private final long windowsize;
   private final long timestamp;
+
+  private List<String> metricTypes;
 
   // The id of the corresponding landscape.
   private final String landscapeId;
@@ -61,6 +64,14 @@ public class Heatmap extends BaseEntity {
 
   public String getLandscapeId() {
     return this.landscapeId;
+  }
+
+  public List<String> getMetricTypes() {
+    return this.metricTypes;
+  }
+
+  public void setMetricTypes(final List<String> metricNames) {
+    this.metricTypes = metricNames;
   }
 
   public void setWindowedHeatmap(final LandscapeMetrics windowedHeatmap) {
