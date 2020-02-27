@@ -34,10 +34,8 @@ public class KafkaLandscapeExchangeService implements Runnable {
 
   private final LandscapeSerializationHelper serializationHelper;
   private final HeatmapSerializationHelper heatmapSerializationHelper;
-  // private final LandscapeMetricsSerializationHelper landscapeMetricsSerializationHelper;
 
   private final MongoHeatmapJsonApiRepository mongoHeatmapJsonApiRepo;
-  // private final MongoHeatmapRepository mongoHeatmapRepo;
   private final MongoLandscapeMetricsRepository mongoMetricRepo;
 
   private final HeatmapService heatmapService;
@@ -56,9 +54,7 @@ public class KafkaLandscapeExchangeService implements Runnable {
   @Inject
   public KafkaLandscapeExchangeService(final LandscapeSerializationHelper serializationHelper,
       final HeatmapSerializationHelper heatmapSerializationHelper,
-      // final LandscapeMetricsSerializationHelper landscapeMetricsSerializationHelper,
       final MongoHeatmapJsonApiRepository mongoHeatmapJsonApiRepo,
-      // final MongoHeatmapRepository mongoHeatmapRepo,
       final MongoLandscapeMetricsRepository mongoMetricRepo,
       final HeatmapService heatmapService,
       final ModelFactory modelFactory,
@@ -68,10 +64,8 @@ public class KafkaLandscapeExchangeService implements Runnable {
 
     this.serializationHelper = serializationHelper;
     this.heatmapSerializationHelper = heatmapSerializationHelper;
-    // this.landscapeMetricsSerializationHelper = landscapeMetricsSerializationHelper;
     this.modelFactory = modelFactory;
     this.mongoHeatmapJsonApiRepo = mongoHeatmapJsonApiRepo;
-    // this.mongoHeatmapRepo = mongoHeatmapRepo;
     this.mongoMetricRepo = mongoMetricRepo;
     this.heatmapService = heatmapService;
     this.kafkaTopic = kafkaTopic;
@@ -107,7 +101,7 @@ public class KafkaLandscapeExchangeService implements Runnable {
 
       for (final ConsumerRecord<String, String> record : records) {
 
-        LOGGER.debug("Recevied landscape Kafka record: {}", record.value());
+        LOGGER.info("Recevied landscape Kafka record: {}", record.value());
 
         final String serializedLandscape = record.value();
         // if (ls != null) {

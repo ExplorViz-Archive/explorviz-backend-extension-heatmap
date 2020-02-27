@@ -11,6 +11,7 @@ import net.explorviz.extension.heatmap.model.heatmap.ClazzMetric;
 import net.explorviz.extension.heatmap.model.heatmap.Heatmap;
 import net.explorviz.extension.heatmap.model.heatmap.LandscapeMetric;
 import net.explorviz.extension.heatmap.model.metrics.ClassActivity;
+import net.explorviz.extension.heatmap.model.metrics.DummyMetric;
 import net.explorviz.extension.heatmap.model.metrics.ExportCoupling;
 import net.explorviz.extension.heatmap.model.metrics.ImportCoupling;
 import net.explorviz.extension.heatmap.model.metrics.InstanceCount;
@@ -47,6 +48,7 @@ public class ModelFactory {
     this.mongoHeatmapRepo = mongoHeatmapRepo;
     this.mongoMetricRepo = mongoMetricRepo;
 
+    this.metrics.add(new DummyMetric(this.idGen.generateId()));
     this.metrics.add(new ClassActivity(this.idGen.generateId()));
     this.metrics.add(new ExportCoupling(this.idGen.generateId()));
     this.metrics.add(new ImportCoupling(this.idGen.generateId()));
@@ -234,7 +236,7 @@ public class ModelFactory {
 
     for (final Clazz clazz : applicationClazzes) {
       clazzMetrics.add(this.createClazzMetric(clazz.getFullQualifiedName(),
-          metric.computeMetric(clazz)));
+          metric.computeMetric(clazz, application)));
     }
 
     return clazzMetrics;

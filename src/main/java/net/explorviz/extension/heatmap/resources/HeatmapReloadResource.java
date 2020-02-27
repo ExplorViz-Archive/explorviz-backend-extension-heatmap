@@ -38,7 +38,7 @@ public class HeatmapReloadResource {
 
   private static final String MEDIA_TYPE = "application/vnd.api+json";
   private static final long QUERY_PARAM_DEFAULT_VALUE_LONG = 0L;
-  private static final String QUERY_PARAM_EMPTY_STRING = "";
+  // private static final String QUERY_PARAM_EMPTY_STRING = "";
 
   private final HeatmapRepository<String> heatmapRepository;
 

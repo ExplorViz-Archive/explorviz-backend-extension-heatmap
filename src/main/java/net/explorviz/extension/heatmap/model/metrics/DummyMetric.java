@@ -8,24 +8,24 @@ import com.github.jasminb.jsonapi.annotations.Type;
 import net.explorviz.landscape.model.application.Application;
 import net.explorviz.landscape.model.application.Clazz;
 
-/**
- * Metric for the number of instances of a class.
- * 
- * @author Tim-Niklas Reck
- *
- */
-@Type("instanceCount")
+@Type("dummyMetric")
 @JsonIdentityInfo(generator = ObjectIdGenerators.StringIdGenerator.class, property = "super.id")
-public class InstanceCount extends Metric {
+public class DummyMetric extends Metric {
 
+  /**
+   * "Dummy metric for testing and demonstration purposes."
+   *
+   * @param id
+   */
   @JsonCreator
-  public InstanceCount(@JsonProperty("id") final String id) {
-    super(id, "instanceCount", "instance count", "The number of instances of a class.");
+  public DummyMetric(@JsonProperty("id") final String id) {
+    super(id, "dummyMetric", "dummy metric",
+        "Dummy metric for testing and demonstration purposes.");
   }
 
   @Override
   public double computeMetric(final Clazz clazz, final Application application) {
-    return clazz.getInstanceCount();
+    return Math.round(Math.random() * 100);
   }
 
 }

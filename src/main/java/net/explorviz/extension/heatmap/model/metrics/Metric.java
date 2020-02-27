@@ -6,6 +6,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import com.github.jasminb.jsonapi.annotations.Type;
 import net.explorviz.extension.heatmap.model.heatmap.BaseEntity;
+import net.explorviz.landscape.model.application.Application;
 import net.explorviz.landscape.model.application.Clazz;
 
 /**
@@ -47,8 +48,10 @@ public abstract class Metric extends BaseEntity {
 
   /**
    * The logic which is used to compute the specified metric for a given class;
+   * 
+   * @param application TODO
    *
    * @return The value of the metric for the given clazz.
    */
-  public abstract double computeMetric(Clazz clazz);
+  public abstract double computeMetric(Clazz clazz, Application application);
 }

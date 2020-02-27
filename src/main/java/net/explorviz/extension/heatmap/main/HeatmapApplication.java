@@ -6,6 +6,7 @@ import net.explorviz.extension.heatmap.model.heatmap.ClazzMetric;
 import net.explorviz.extension.heatmap.model.heatmap.Heatmap;
 import net.explorviz.extension.heatmap.model.heatmap.LandscapeMetric;
 import net.explorviz.extension.heatmap.model.metrics.ClassActivity;
+import net.explorviz.extension.heatmap.model.metrics.DummyMetric;
 import net.explorviz.extension.heatmap.model.metrics.ExportCoupling;
 import net.explorviz.extension.heatmap.model.metrics.ImportCoupling;
 import net.explorviz.extension.heatmap.model.metrics.InstanceCount;
@@ -38,6 +39,7 @@ public class HeatmapApplication extends ResourceConfig {
     GenericTypeFinder.getTypeMap().putIfAbsent("ImportCouplingMetric", ImportCoupling.class);
     GenericTypeFinder.getTypeMap().putIfAbsent("ExportCouplingMetric", ExportCoupling.class);
     GenericTypeFinder.getTypeMap().putIfAbsent("ClassActivityMetric", ClassActivity.class);
+    GenericTypeFinder.getTypeMap().putIfAbsent("DummyMetric", DummyMetric.class);
 
 
     // register Landscape Model classes, since we want to use them
