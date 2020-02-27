@@ -27,9 +27,9 @@ public class Heatmap extends BaseEntity {
   private final String landscapeId;
 
   @Relationship("aggregatedHeatmap")
-  private LandscapeMetrics aggregatedHeatmap;
+  private LandscapeMetric aggregatedHeatmap;
   @Relationship("windowedHeatmap")
-  private LandscapeMetrics windowedHeatmap;
+  private LandscapeMetric windowedHeatmap;
 
   @JsonCreator
   public Heatmap(@JsonProperty("id") final String id,
@@ -46,15 +46,15 @@ public class Heatmap extends BaseEntity {
     return this.timestamp;
   }
 
-  public LandscapeMetrics getAggregatedHeatmap() {
+  public LandscapeMetric getAggregatedHeatmap() {
     return this.aggregatedHeatmap;
   }
 
-  public void setAggregatedHeatmap(final LandscapeMetrics aggregatedHeatmap) {
+  public void setAggregatedHeatmap(final LandscapeMetric aggregatedHeatmap) {
     this.aggregatedHeatmap = aggregatedHeatmap;
   }
 
-  public LandscapeMetrics getWindowedHeatmap() {
+  public LandscapeMetric getWindowedHeatmap() {
     return this.windowedHeatmap;
   }
 
@@ -74,7 +74,7 @@ public class Heatmap extends BaseEntity {
     this.metricTypes = metricNames;
   }
 
-  public void setWindowedHeatmap(final LandscapeMetrics windowedHeatmap) {
+  public void setWindowedHeatmap(final LandscapeMetric windowedHeatmap) {
     this.windowedHeatmap = windowedHeatmap;
   }
 

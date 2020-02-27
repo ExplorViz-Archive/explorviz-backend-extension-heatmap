@@ -16,7 +16,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * TODO: Implement communication with frontend.
+ * This resource provides an interface for the frontend to register for heatmap broadcast updated.
  *
  * @author Tim-Niklas Reck
  *
@@ -57,5 +57,4 @@ public class HeatmapBroadcastResource {
     LOGGER.debug("Registering: {}", eventSink.toString());
   }
 
-  // TODO: Further methods
 }

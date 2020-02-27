@@ -22,7 +22,7 @@
     service = "user"
     
   [http.routers.heatmap]
-    rule = "PathPrefix(`/v1/heatmap/broadcast`)"
+    rule = "PathPrefix(`/v1/heatmap/broadcast`) || PathPrefix(`/v1/heatmaps`)"
     service = "heatmap" 
 
 [http.services]

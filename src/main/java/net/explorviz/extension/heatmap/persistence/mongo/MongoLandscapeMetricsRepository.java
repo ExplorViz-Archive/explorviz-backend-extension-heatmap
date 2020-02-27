@@ -10,7 +10,7 @@ import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 import javax.inject.Inject;
 import javax.ws.rs.InternalServerErrorException;
-import net.explorviz.extension.heatmap.model.heatmap.LandscapeMetrics;
+import net.explorviz.extension.heatmap.model.heatmap.LandscapeMetric;
 import net.explorviz.extension.heatmap.persistence.HeatmapRepository;
 import net.explorviz.landscape.model.store.Timestamp;
 import net.explorviz.shared.config.annotations.Config;
@@ -18,7 +18,7 @@ import org.bson.Document;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class MongoLandscapeMetricsRepository implements HeatmapRepository<LandscapeMetrics> {
+public class MongoLandscapeMetricsRepository implements HeatmapRepository<LandscapeMetric> {
 
   private static final Logger LOGGER =
       LoggerFactory.getLogger(MongoLandscapeMetricsRepository.class);
@@ -38,7 +38,7 @@ public class MongoLandscapeMetricsRepository implements HeatmapRepository<Landsc
   }
 
   @Override
-  public void save(final String id, final long timestamp, final LandscapeMetrics component) {
+  public void save(final String id, final long timestamp, final LandscapeMetric component) {
 
     final String landscapeMetricsJsonApi;
     try {
@@ -68,7 +68,7 @@ public class MongoLandscapeMetricsRepository implements HeatmapRepository<Landsc
   }
 
   @Override
-  public Optional<LandscapeMetrics> getByTimestamp(final long timestamp) {
+  public Optional<LandscapeMetric> getByTimestamp(final long timestamp) {
     final MongoCollection<Document> metricsCollection =
         this.mongoHelper.getLandscapeMetricCollection();
 
@@ -80,7 +80,7 @@ public class MongoLandscapeMetricsRepository implements HeatmapRepository<Landsc
     if (result.first() == null) {
       return Optional.empty();
     } else {
-      LandscapeMetrics metrics;
+      LandscapeMetric metrics;
       try {
         metrics = this.serializationHelper
             .deserialize(result.first().getString(MongoHelper.FIELD_LANDSCAPEMETRICS));
@@ -92,12 +92,12 @@ public class MongoLandscapeMetricsRepository implements HeatmapRepository<Landsc
   }
 
   @Override
-  public Optional<LandscapeMetrics> getByTimestamp(final Timestamp timestamp) {
+  public Optional<LandscapeMetric> getByTimestamp(final Timestamp timestamp) {
     return this.getByTimestamp(timestamp.getTimestamp());
   }
 
   @Override
-  public Optional<LandscapeMetrics> getById(final String id) {
+  public Optional<LandscapeMetric> getById(final String id) {
     final MongoCollection<Document> metricsCollection =
         this.mongoHelper.getLandscapeMetricCollection();
 
@@ -109,7 +109,7 @@ public class MongoLandscapeMetricsRepository implements HeatmapRepository<Landsc
     if (result.first() == null) {
       return Optional.empty();
     } else {
-      LandscapeMetrics metrics;
+      LandscapeMetric metrics;
       try {
         metrics = this.serializationHelper
             .deserialize(result.first().getString(MongoHelper.FIELD_LANDSCAPEMETRICS));
@@ -121,7 +121,7 @@ public class MongoLandscapeMetricsRepository implements HeatmapRepository<Landsc
   }
 
   @Override
-  public Optional<LandscapeMetrics> getNthLastRecord(final int n) {
+  public Optional<LandscapeMetric> getNthLastRecord(final int n) {
     final MongoCollection<Document> metricsCollection =
         this.mongoHelper.getLandscapeMetricCollection();
 
@@ -137,7 +137,7 @@ public class MongoLandscapeMetricsRepository implements HeatmapRepository<Landsc
     if (result.first() == null) {
       return Optional.empty();
     } else {
-      LandscapeMetrics metrics;
+      LandscapeMetric metrics;
       try {
         metrics = this.serializationHelper
             .deserialize(result.first().getString(MongoHelper.FIELD_LANDSCAPEMETRICS));

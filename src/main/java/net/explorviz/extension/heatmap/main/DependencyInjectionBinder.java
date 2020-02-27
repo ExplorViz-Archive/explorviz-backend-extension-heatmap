@@ -2,7 +2,7 @@ package net.explorviz.extension.heatmap.main;
 
 import javax.inject.Singleton;
 import net.explorviz.extension.heatmap.model.heatmap.Heatmap;
-import net.explorviz.extension.heatmap.model.heatmap.LandscapeMetrics;
+import net.explorviz.extension.heatmap.model.heatmap.LandscapeMetric;
 import net.explorviz.extension.heatmap.model.helper.ModelFactory;
 import net.explorviz.extension.heatmap.persistence.HeatmapRepository;
 import net.explorviz.extension.heatmap.persistence.mongo.HeatmapSerializationHelper;
@@ -62,7 +62,7 @@ public class DependencyInjectionBinder extends CommonDependencyInjectionBinder {
     this.bind(MongoHeatmapRepository.class).to(new TypeLiteral<HeatmapRepository<Heatmap>>() {})
         .in(Singleton.class);
     this.bind(MongoLandscapeMetricsRepository.class)
-        .to(new TypeLiteral<HeatmapRepository<LandscapeMetrics>>() {})
+        .to(new TypeLiteral<HeatmapRepository<LandscapeMetric>>() {})
         .in(Singleton.class);
 
   }

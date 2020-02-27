@@ -20,7 +20,7 @@ public class ExportCoupling extends Metric {
   @Override
   public double computeMetric(final Clazz clazz) {
     // TODO Auto-generated method stub
-    return Math.round(Math.random() * 100 - 50);
+    return Math.round(Math.random() * 100);
   }
 
 }

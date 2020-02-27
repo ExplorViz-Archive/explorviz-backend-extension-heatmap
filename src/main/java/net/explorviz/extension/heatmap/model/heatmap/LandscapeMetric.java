@@ -17,9 +17,9 @@ import net.explorviz.extension.heatmap.model.metrics.Metric;
  * @author Tim-Niklas Reck
  *
  */
-@Type("landscapeMetrics")
+@Type("landscapeMetric")
 @JsonIdentityInfo(generator = ObjectIdGenerators.StringIdGenerator.class, property = "super.id")
-public class LandscapeMetrics extends BaseEntity {
+public class LandscapeMetric extends BaseEntity {
 
   private final Long timestamp;
 
@@ -36,7 +36,7 @@ public class LandscapeMetrics extends BaseEntity {
   private List<ApplicationMetricCollection> applicationMetricCollections = new ArrayList<>();
 
   @JsonCreator
-  public LandscapeMetrics(@JsonProperty("id") final String id,
+  public LandscapeMetric(@JsonProperty("id") final String id,
       @JsonProperty("timestamp") final long timestamp,
       @JsonProperty("landscapeId") final String landscapeId) {
     super(id);

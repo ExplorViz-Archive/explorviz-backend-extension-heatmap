@@ -9,7 +9,7 @@ import net.explorviz.extension.heatmap.model.heatmap.ApplicationMetric;
 import net.explorviz.extension.heatmap.model.heatmap.ApplicationMetricCollection;
 import net.explorviz.extension.heatmap.model.heatmap.ClazzMetric;
 import net.explorviz.extension.heatmap.model.heatmap.Heatmap;
-import net.explorviz.extension.heatmap.model.heatmap.LandscapeMetrics;
+import net.explorviz.extension.heatmap.model.heatmap.LandscapeMetric;
 import net.explorviz.extension.heatmap.model.metrics.ClassActivity;
 import net.explorviz.extension.heatmap.model.metrics.ExportCoupling;
 import net.explorviz.extension.heatmap.model.metrics.ImportCoupling;
@@ -47,24 +47,23 @@ public class ModelFactory {
     this.mongoHeatmapRepo = mongoHeatmapRepo;
     this.mongoMetricRepo = mongoMetricRepo;
 
-    this.metrics.add(new InstanceCount(this.idGen.generateId()));
     this.metrics.add(new ClassActivity(this.idGen.generateId()));
-    this.metrics.add(new ImportCoupling(this.idGen.generateId()));
     this.metrics.add(new ExportCoupling(this.idGen.generateId()));
+    this.metrics.add(new ImportCoupling(this.idGen.generateId()));
+    this.metrics.add(new InstanceCount(this.idGen.generateId()));
   }
 
   /**
-   * Create and initialize a new {@link LandscapeMetrics} and generate a new id for it.
+   * Create and initialize a new {@link LandscapeMetric} and generate a new id for it.
    *
    * @param landscape
    * @return
    */
-  public LandscapeMetrics createLandscapeMetrics(final Landscape landscape) {
-    final LandscapeMetrics lmetrics =
-        new LandscapeMetrics(this.idGen.generateId(), landscape.getTimestamp().getTimestamp(),
+  public LandscapeMetric createLandscapeMetrics(final Landscape landscape) {
+    final LandscapeMetric lmetrics =
+        new LandscapeMetric(this.idGen.generateId(), landscape.getTimestamp().getTimestamp(),
             landscape.getId());
     lmetrics.setMetrics(this.metrics);
-    // lmetrics.setParent(null);
     final List<ApplicationMetricCollection> appMetricCollections =
         this.computeApplicationMetricsCollection(landscape);
     lmetrics.setApplicationMetricCollections(appMetricCollections);
@@ -114,7 +113,7 @@ public class ModelFactory {
    * @param previousTimestamp the timestamp of the previous heatmap
    */
   public Heatmap createHeatmap(
-      final LandscapeMetrics lmetrics,
+      final LandscapeMetric lmetrics,
       final long previousTimestamp) {
 
     final int windowsize = PropertyHelper.getIntegerProperty("heatmap.window.size");
@@ -122,10 +121,10 @@ public class ModelFactory {
         new Heatmap(this.idGen.generateId(), windowsize, lmetrics.getTimestamp(),
             lmetrics.getLandscapeId());
 
-    final LandscapeMetrics aggregatedHeatmap =
+    final LandscapeMetric aggregatedHeatmap =
         this.computeAggregatedHeatmap(this.deepCopy(lmetrics),
             this.mongoHeatmapRepo.getByTimestamp(previousTimestamp));
-    final LandscapeMetrics windowedHeatmap = this.computeWindowHeatmap(this.deepCopy(lmetrics),
+    final LandscapeMetric windowedHeatmap = this.computeWindowHeatmap(this.deepCopy(lmetrics),
         this.mongoMetricRepo.getNthLastRecord(windowsize), windowsize);
 
     heatmap.setAggregatedHeatmap(aggregatedHeatmap);
@@ -142,14 +141,14 @@ public class ModelFactory {
 
 
   /**
-   * Creates a deep copy of a {@link LandscapeMetrics} object.
+   * Creates a deep copy of a {@link LandscapeMetric} object.
    *
    * @param landscapeMetrics
    * @return
    */
-  public LandscapeMetrics deepCopy(final LandscapeMetrics landscapeMetrics) {
-    final LandscapeMetrics lmetrics =
-        new LandscapeMetrics(this.idGen.generateId(), landscapeMetrics.getTimestamp(),
+  public LandscapeMetric deepCopy(final LandscapeMetric landscapeMetrics) {
+    final LandscapeMetric lmetrics =
+        new LandscapeMetric(this.idGen.generateId(), landscapeMetrics.getTimestamp(),
             landscapeMetrics.getLandscapeId());
     lmetrics.setMetrics(this.metrics);
     final List<ApplicationMetricCollection> appMetricCollections = new ArrayList<>();
@@ -265,8 +264,8 @@ public class ModelFactory {
    * @param aggregatedMap
    * @return
    */
-  private LandscapeMetrics aggregateHeatmaps(final LandscapeMetrics lmetrics,
-      final LandscapeMetrics aggregatedMap) {
+  private LandscapeMetric aggregateHeatmaps(final LandscapeMetric lmetrics,
+      final LandscapeMetric aggregatedMap) {
     // First loop: For all applications ...
     for (final ApplicationMetricCollection appCollection : lmetrics
         .getApplicationMetricCollections()) {
@@ -300,8 +299,8 @@ public class ModelFactory {
    * @param oldMetrics
    * @return
    */
-  private LandscapeMetrics computeDifference(final LandscapeMetrics lmetrics,
-      final LandscapeMetrics oldMetrics) {
+  private LandscapeMetric computeDifference(final LandscapeMetric lmetrics,
+      final LandscapeMetric oldMetrics) {
     // First loop: For all applications ...
     for (final ApplicationMetricCollection appCollection : lmetrics
         .getApplicationMetricCollections()) {
@@ -319,7 +318,7 @@ public class ModelFactory {
           final ClazzMetric comparedClazz =
               comparedMetric.getClazzMetricByName(clazzMetric.getClazzName());
           if (comparedClazz != null) {
-            // ... set value to half of the old value and add the new value if an old value exists.
+            // ... substract old value from new value to get the difference.
             clazzMetric.subtractValue(comparedClazz.getValue());
           }
         }
@@ -335,7 +334,7 @@ public class ModelFactory {
    * @param lmetrics
    * @param previousHeatmap the previous heatmap or nothing if there is no heatmap in the database.
    */
-  private LandscapeMetrics computeAggregatedHeatmap(final LandscapeMetrics lmetrics,
+  private LandscapeMetric computeAggregatedHeatmap(final LandscapeMetric lmetrics,
       final Optional<Heatmap> previousHeatmap) {
     // 1. Check if there is a previous heatmap in the database.
     if (previousHeatmap.isPresent()) {
@@ -352,8 +351,8 @@ public class ModelFactory {
    *
    * @param metrics
    */
-  private LandscapeMetrics computeWindowHeatmap(final LandscapeMetrics lmetrics,
-      final Optional<LandscapeMetrics> previousMetrics,
+  private LandscapeMetric computeWindowHeatmap(final LandscapeMetric lmetrics,
+      final Optional<LandscapeMetric> previousMetrics,
       final int windowsize) {
     // 1. get the heatmap of the n-1 timesteps before landscape metrics
     if (windowsize == 0 || previousMetrics.isEmpty()) {

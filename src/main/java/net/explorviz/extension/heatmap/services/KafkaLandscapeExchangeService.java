@@ -6,7 +6,7 @@ import java.util.Arrays;
 import java.util.Properties;
 import javax.inject.Inject;
 import net.explorviz.extension.heatmap.model.heatmap.Heatmap;
-import net.explorviz.extension.heatmap.model.heatmap.LandscapeMetrics;
+import net.explorviz.extension.heatmap.model.heatmap.LandscapeMetric;
 import net.explorviz.extension.heatmap.model.helper.ModelFactory;
 import net.explorviz.extension.heatmap.persistence.mongo.HeatmapSerializationHelper;
 import net.explorviz.extension.heatmap.persistence.mongo.MongoHeatmapJsonApiRepository;
@@ -125,7 +125,7 @@ public class KafkaLandscapeExchangeService implements Runnable {
 
 
         // -- 1. compute metrics for landscape
-        final LandscapeMetrics lmetrics = this.modelFactory.createLandscapeMetrics(l);
+        final LandscapeMetric lmetrics = this.modelFactory.createLandscapeMetrics(l);
         // LOGGER.info("Computed metrics for landscape with id: {}", l.getId());
 
         // -- 2. compute heatmap with the new lmetrics

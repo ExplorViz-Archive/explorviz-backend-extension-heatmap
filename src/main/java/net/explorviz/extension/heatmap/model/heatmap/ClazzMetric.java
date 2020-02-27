@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import com.github.jasminb.jsonapi.annotations.Type;
+import net.explorviz.extension.heatmap.model.helper.MathHelper;
 
 /**
  * Contains the name, value pair of a class and the metric value.
@@ -29,21 +30,23 @@ public class ClazzMetric extends BaseEntity {
   }
 
   /**
-   * Add the new value to the old one.
+   * Add the new value to the old one. The result is rounded to 4 decimal places.
    *
    * @param value
    */
   public void addValue(final double value) {
-    this.value += value;
+    final double tmp = this.value + value;
+    this.value = MathHelper.round(tmp, 4);
   }
 
   /**
-   * Subtract the new value from the old one.
+   * Subtract the new value from the old one. The result is rounded to 4 decimal places.
    *
    * @param value the value to substract
    */
   public void subtractValue(final double value) {
-    this.value -= value;
+    final double tmp = this.value - value;
+    this.value = MathHelper.round(tmp, 4);
   }
 
   public String getClazzName() {

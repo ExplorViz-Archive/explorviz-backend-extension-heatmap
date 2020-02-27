@@ -4,7 +4,7 @@ import com.github.jasminb.jsonapi.JSONAPIDocument;
 import com.github.jasminb.jsonapi.ResourceConverter;
 import com.github.jasminb.jsonapi.exceptions.DocumentSerializationException;
 import javax.inject.Inject;
-import net.explorviz.extension.heatmap.model.heatmap.LandscapeMetrics;
+import net.explorviz.extension.heatmap.model.heatmap.LandscapeMetric;
 
 /**
  * Helper class for de-/serializing landscapes from/to json api.
@@ -28,25 +28,25 @@ public class LandscapeMetricsSerializationHelper {
    *
    * @throws DocumentSerializationException if the landscape metrics could not be parsed.
    */
-  public String serialize(final LandscapeMetrics l) throws DocumentSerializationException {
-    final JSONAPIDocument<LandscapeMetrics> landscapeDoc = new JSONAPIDocument<>(l);
+  public String serialize(final LandscapeMetric l) throws DocumentSerializationException {
+    final JSONAPIDocument<LandscapeMetric> landscapeDoc = new JSONAPIDocument<>(l);
     final byte[] landscapeBytes = this.jsonApiConverter.writeDocument(landscapeDoc);
     return new String(landscapeBytes);
   }
 
   /**
-   * Deserializes a json-api string to a {@link LandscapeMetrics} object.
+   * Deserializes a json-api string to a {@link LandscapeMetric} object.
    *
    * @param jsonApi the json api string representing a landscape metrics object
    * @return the landscape metrics
    * @throws DocumentSerializationException if the given string can't be deserialized to a landscape
    *         metrics object
    */
-  public LandscapeMetrics deserialize(final String jsonApi) throws DocumentSerializationException {
+  public LandscapeMetric deserialize(final String jsonApi) throws DocumentSerializationException {
 
     final byte[] b = jsonApi.getBytes();
-    final JSONAPIDocument<LandscapeMetrics> landscapeDoc =
-        this.jsonApiConverter.readDocument(b, LandscapeMetrics.class);
+    final JSONAPIDocument<LandscapeMetric> landscapeDoc =
+        this.jsonApiConverter.readDocument(b, LandscapeMetric.class);
 
     return landscapeDoc.get();
   }
