@@ -125,7 +125,7 @@ public class MongoLandscapeMetricsRepository implements HeatmapRepository<Landsc
     final MongoCollection<Document> metricsCollection =
         this.mongoHelper.getLandscapeMetricCollection();
 
-    // Check if there are atleast n documents in the database
+    // Check if there are at least n documents in the database
     if (metricsCollection.countDocuments() < n) {
       return Optional.empty();
     }

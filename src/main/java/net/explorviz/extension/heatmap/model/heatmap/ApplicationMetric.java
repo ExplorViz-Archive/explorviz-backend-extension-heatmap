@@ -21,6 +21,7 @@ import java.util.List;
 public class ApplicationMetric extends BaseEntity {
 
   private final String metricType;
+  private long largestValue = 0;
 
   @Relationship("classMetricValues")
   private List<ClazzMetric> classMetricValues = new ArrayList<>();
@@ -41,7 +42,7 @@ public class ApplicationMetric extends BaseEntity {
   }
 
   /**
-   * Return the ClazzMetric with the given clazzName
+   * Return the {@link ClazzMetric} with the given clazzName
    *
    * @param clazzName the full qualified name of the target clazz
    * @return
@@ -57,8 +58,29 @@ public class ApplicationMetric extends BaseEntity {
     return clazzMetric;
   }
 
+  public long getLargestValue() {
+    return this.largestValue;
+  }
+
+  public void setLargestValue(final long largestValue) {
+    this.largestValue = largestValue;
+  }
+
   public void setClassMetricValues(final List<ClazzMetric> classMetricValues) {
     this.classMetricValues = classMetricValues;
   }
 
+  /**
+   * Compute the largest value of all ClazzMetrics.
+   */
+  public void computeLargestValue(final double scalar) {
+    this.largestValue = Long.MIN_VALUE;
+    for (final ClazzMetric clazzMetric : this.classMetricValues) {
+      final double v = Math.abs(clazzMetric.getValue());
+      if (v > this.largestValue) {
+        this.largestValue = Math.round(v);
+      }
+    }
+    this.largestValue *= scalar;
+  }
 }

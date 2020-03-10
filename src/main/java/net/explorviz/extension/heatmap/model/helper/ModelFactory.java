@@ -83,7 +83,7 @@ public class ModelFactory {
       final Application application) {
     final ApplicationMetricCollection appCollection = new ApplicationMetricCollection(
         this.idGen.generateId(), application.getName(), application.getId());
-    appCollection.setMetricValues(this.computeMetrics(application, this.metrics));
+    appCollection.setMetricValues(this.computeApplicationMetrics(application, this.metrics));
     return appCollection;
   }
 
@@ -102,7 +102,7 @@ public class ModelFactory {
       final Metric metric) {
     final ApplicationMetric appMetric =
         new ApplicationMetric(this.idGen.generateId(), metric.getTypeName());
-    appMetric.setClassMetricValues(this.computeApplicationMetrics(application, metric));
+    appMetric.setClassMetricValues(this.computeClazzMetrics(application, metric));
     return appMetric;
   }
 
@@ -198,6 +198,7 @@ public class ModelFactory {
       clazzMetrics.add(this.createClazzMetric(clazzMetric.getClazzName(), clazzMetric.getValue()));
     }
     appMetric.setClassMetricValues(clazzMetrics);
+    appMetric.setLargestValue(applicationMetric.getLargestValue());
     return appMetric;
   }
 
@@ -208,7 +209,7 @@ public class ModelFactory {
    * @param metrics the list of metrics to be applied
    * @return
    */
-  private List<ApplicationMetric> computeMetrics(final Application application,
+  private List<ApplicationMetric> computeApplicationMetrics(final Application application,
       final List<Metric> metrics) {
     final List<ApplicationMetric> list = new ArrayList<>();
 
@@ -225,7 +226,7 @@ public class ModelFactory {
    * @param application
    * @return
    */
-  private List<ClazzMetric> computeApplicationMetrics(final Application application,
+  private List<ClazzMetric> computeClazzMetrics(final Application application,
       final Metric metric) {
     final List<ClazzMetric> clazzMetrics = new ArrayList<>();
 
@@ -238,7 +239,6 @@ public class ModelFactory {
       clazzMetrics.add(this.createClazzMetric(clazz.getFullQualifiedName(),
           metric.computeMetric(clazz, application)));
     }
-
     return clazzMetrics;
   }
 
@@ -308,21 +308,26 @@ public class ModelFactory {
         .getApplicationMetricCollections()) {
       final ApplicationMetricCollection comparedCollection =
           oldMetrics.getApplicationMetricCollectionByName(appCollection.getAppName());
-      if (comparedCollection == null) {
-        continue;
-      }
       // Second loop: ... for all metrics ...
       for (final ApplicationMetric appMetric : appCollection.getMetricValues()) {
-        final ApplicationMetric comparedMetric =
-            comparedCollection.getByMetricType(appMetric.getMetricType());
-        // Third loop: ... for all clazzes ...
-        for (final ClazzMetric clazzMetric : appMetric.getClassMetricValues()) {
-          final ClazzMetric comparedClazz =
-              comparedMetric.getClazzMetricByName(clazzMetric.getClazzName());
-          if (comparedClazz != null) {
-            // ... substract old value from new value to get the difference.
-            clazzMetric.subtractValue(comparedClazz.getValue());
+        if (comparedCollection == null) {
+          appMetric.computeLargestValue(1);
+          continue;
+        } else {
+          final ApplicationMetric comparedMetric =
+              comparedCollection.getByMetricType(appMetric.getMetricType());
+          final List<ClazzMetric> oldMetricValues = comparedMetric.getClassMetricValues();
+          // Third loop: ... for all clazzes ...
+          for (final ClazzMetric clazzMetric : appMetric.getClassMetricValues()) {
+            final ClazzMetric comparedClazz =
+                comparedMetric.getClazzMetricByName(clazzMetric.getClazzName());
+            if (comparedClazz != null) {
+              oldMetricValues.remove(comparedClazz);
+              // ... substract old value from new value to get the difference.
+              clazzMetric.subtractValue(comparedClazz.getValue());
+            }
           }
+          appMetric.computeLargestValue(2);
         }
       }
     }
@@ -356,7 +361,7 @@ public class ModelFactory {
   private LandscapeMetric computeWindowHeatmap(final LandscapeMetric lmetrics,
       final Optional<LandscapeMetric> previousMetrics,
       final int windowsize) {
-    // 1. get the heatmap of the n-1 timesteps before landscape metrics
+    // 1. get the heatmap of the n timesteps before landscape metrics
     if (windowsize == 0 || previousMetrics.isEmpty()) {
       return lmetrics;
     } else {

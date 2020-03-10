@@ -88,12 +88,6 @@ public class KafkaLandscapeExchangeService implements Runnable {
 
     this.kafkaConsumer.subscribe(Arrays.asList(this.kafkaTopic));
 
-    // String ls = null;
-    // try {
-    // ls = new String(Files.readAllBytes(Paths.get("G:/Masterarbeit/landscape0.txt")));
-    // } catch (final IOException e) {
-    // }
-
     while (true) {
 
       final ConsumerRecords<String, String> records =
@@ -101,19 +95,16 @@ public class KafkaLandscapeExchangeService implements Runnable {
 
       for (final ConsumerRecord<String, String> record : records) {
 
-        LOGGER.info("Recevied landscape Kafka record: {}", record.value());
+        // LOGGER.debug("Recevied landscape Kafka record: {}", record.value());
 
         final String serializedLandscape = record.value();
-        // if (ls != null) {
-        // serializedLandscape = ls;
-        // }
 
         Landscape l;
         try {
           l = this.serializationHelper.deserialize(serializedLandscape);
-          LOGGER.debug("Deserialized landscape with id: {}", l.getId());
+          // LOGGER.debug("Deserialized landscape with id: {}", l.getId());
         } catch (final DocumentSerializationException e) {
-          LOGGER.error("Could not deserialize landscape with value {}", serializedLandscape, e);
+          // LOGGER.error("Could not deserialize landscape with value {}", serializedLandscape, e);
           continue;
         }
 
@@ -129,7 +120,7 @@ public class KafkaLandscapeExchangeService implements Runnable {
         String serializedHeatmap = null;
         try {
           serializedHeatmap = this.heatmapSerializationHelper.serialize(heatmap);
-          LOGGER.debug("Serialized {}.", heatmap.getId());
+          // LOGGER.debug("Serialized {}.", heatmap.getId());
         } catch (final DocumentSerializationException e) {
           if (LOGGER.isErrorEnabled()) {
             LOGGER.error("Could not serialize document. No document broadcasted.");
@@ -143,7 +134,7 @@ public class KafkaLandscapeExchangeService implements Runnable {
           this.mongoMetricRepo.save(lmetrics.getId(), lmetrics.getTimestamp(), lmetrics);
 
           // 6. broadcast serialized heatmap to clients (similar to broadcast service)
-          LOGGER.debug("Broadcasting landscape with timestamp: {}", heatmap.getTimestamp());
+          // LOGGER.debug("Broadcasting landscape with timestamp: {}", heatmap.getTimestamp());
           this.heatmapService.broadcastHeatmap(serializedHeatmap);
         }
 
