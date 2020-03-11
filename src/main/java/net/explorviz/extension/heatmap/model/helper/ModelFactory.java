@@ -271,24 +271,27 @@ public class ModelFactory {
     // First loop: For all applications ...
     for (final ApplicationMetricCollection appCollection : lmetrics
         .getApplicationMetricCollections()) {
-      final ApplicationMetricCollection aggregatedCollection =
-          aggregatedMap.getApplicationMetricCollectionByName(appCollection.getAppName());
-      if (aggregatedCollection == null) {
-        continue;
+      ApplicationMetricCollection aggregatedCollection = null;
+      if (aggregatedMap != null) {
+        aggregatedCollection =
+            aggregatedMap.getApplicationMetricCollectionByName(appCollection.getAppName());
       }
       // Second loop: ... for all metrics ...
       for (final ApplicationMetric appMetric : appCollection.getMetricValues()) {
-        final ApplicationMetric aggregatedMetric =
-            aggregatedCollection.getByMetricType(appMetric.getMetricType());
-        // Third loop: ... for all clazzes ...
-        for (final ClazzMetric clazzMetric : appMetric.getClassMetricValues()) {
-          final ClazzMetric aggregatedClazz =
-              aggregatedMetric.getClazzMetricByName(clazzMetric.getClazzName());
-          if (aggregatedClazz != null) {
-            // ... add half of the old value to the new one.
-            clazzMetric.addValue(0.5 * aggregatedClazz.getValue());
+        if (aggregatedCollection != null) {
+          final ApplicationMetric aggregatedMetric =
+              aggregatedCollection.getByMetricType(appMetric.getMetricType());
+          // Third loop: ... for all clazzes ...
+          for (final ClazzMetric clazzMetric : appMetric.getClassMetricValues()) {
+            final ClazzMetric aggregatedClazz =
+                aggregatedMetric.getClazzMetricByName(clazzMetric.getClazzName());
+            if (aggregatedClazz != null) {
+              // ... add half of the old value to the new one.
+              clazzMetric.addValue(0.5 * aggregatedClazz.getValue());
+            }
           }
         }
+        appMetric.computeLargestValue(1);
       }
     }
     return lmetrics;
@@ -298,22 +301,23 @@ public class ModelFactory {
    * Compute the difference between the same classes of each metric object and return an object
    * containing the difference.
    *
-   * @param oldMetrics
+   * @param lmetric the new {@link LandscapeMetric} to compute the difference for
+   * @param oldMetrics the old {@link LandscapeMetrics} to compare to or null if none exists
    * @return
    */
-  private LandscapeMetric computeDifference(final LandscapeMetric lmetrics,
+  private LandscapeMetric computeDifference(final LandscapeMetric lmetric,
       final LandscapeMetric oldMetrics) {
     // First loop: For all applications ...
-    for (final ApplicationMetricCollection appCollection : lmetrics
+    for (final ApplicationMetricCollection appCollection : lmetric
         .getApplicationMetricCollections()) {
-      final ApplicationMetricCollection comparedCollection =
-          oldMetrics.getApplicationMetricCollectionByName(appCollection.getAppName());
+      ApplicationMetricCollection comparedCollection = null;
+      if (oldMetrics != null) {
+        comparedCollection =
+            oldMetrics.getApplicationMetricCollectionByName(appCollection.getAppName());
+      }
       // Second loop: ... for all metrics ...
       for (final ApplicationMetric appMetric : appCollection.getMetricValues()) {
-        if (comparedCollection == null) {
-          appMetric.computeLargestValue(1);
-          continue;
-        } else {
+        if (comparedCollection != null) {
           final ApplicationMetric comparedMetric =
               comparedCollection.getByMetricType(appMetric.getMetricType());
           final List<ClazzMetric> oldMetricValues = comparedMetric.getClassMetricValues();
@@ -327,11 +331,13 @@ public class ModelFactory {
               clazzMetric.subtractValue(comparedClazz.getValue());
             }
           }
-          appMetric.computeLargestValue(2);
         }
+        // Set the maximum value to twice the largest absolute value for the heatmap to scale each
+        // value to a range of [0,1] ("simpleHeat") and [-0.5,0.5] ("arrayHeat").
+        appMetric.computeLargestValue(2);
       }
     }
-    return lmetrics;
+    return lmetric;
   }
 
   /**
@@ -344,26 +350,29 @@ public class ModelFactory {
   private LandscapeMetric computeAggregatedHeatmap(final LandscapeMetric lmetrics,
       final Optional<Heatmap> previousHeatmap) {
     // 1. Check if there is a previous heatmap in the database.
-    if (previousHeatmap.isPresent()) {
-      final Heatmap previousMap = previousHeatmap.get();
-      // 2. decay and add lmetrics
-      return this.aggregateHeatmaps(lmetrics, previousMap.getAggregatedHeatmap());
+    if (previousHeatmap.isEmpty()) {
+      return this.aggregateHeatmaps(lmetrics, null);
     } else {
-      return lmetrics;
+      // 2. decay and add lmetrics
+      final Heatmap previousMap = previousHeatmap.get();
+      return this.aggregateHeatmaps(lmetrics, previousMap.getAggregatedHeatmap());
     }
   }
 
   /**
    * Compute the heatmap for the given landscape metrics and the set windowsize.
    *
-   * @param metrics
+   * @param lmetrics the current lmetrics to be computed
+   * @param previousMetrics the previous metrics to compare against
+   * @param windowsize the windowsize specified in the properties file
+   * @return
    */
   private LandscapeMetric computeWindowHeatmap(final LandscapeMetric lmetrics,
       final Optional<LandscapeMetric> previousMetrics,
       final int windowsize) {
     // 1. get the heatmap of the n timesteps before landscape metrics
     if (windowsize == 0 || previousMetrics.isEmpty()) {
-      return lmetrics;
+      return this.computeDifference(lmetrics, null);
     } else {
       // 2. compute difference
       return this.computeDifference(lmetrics, previousMetrics.get());
