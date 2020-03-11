@@ -37,7 +37,6 @@ public class ClazzMetric extends BaseEntity {
   public void addValue(final double value) {
     final double tmp = this.value + value;
     this.value = MathHelper.round(tmp, 4);
-    System.out.println(this.value);
   }
 
   /**
