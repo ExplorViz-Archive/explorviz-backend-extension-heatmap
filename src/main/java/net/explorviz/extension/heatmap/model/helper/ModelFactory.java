@@ -10,7 +10,6 @@ import net.explorviz.extension.heatmap.model.heatmap.ApplicationMetricCollection
 import net.explorviz.extension.heatmap.model.heatmap.ClazzMetric;
 import net.explorviz.extension.heatmap.model.heatmap.Heatmap;
 import net.explorviz.extension.heatmap.model.heatmap.LandscapeMetric;
-import net.explorviz.extension.heatmap.model.metrics.DummyMetric;
 import net.explorviz.extension.heatmap.model.metrics.DynamicKey;
 import net.explorviz.extension.heatmap.model.metrics.ExportCoupling;
 import net.explorviz.extension.heatmap.model.metrics.ImportCoupling;
@@ -52,7 +51,7 @@ public class ModelFactory {
     this.metrics.add(new ExportCoupling(this.idGen.generateId()));
     this.metrics.add(new ImportCoupling(this.idGen.generateId()));
     this.metrics.add(new InstanceCount(this.idGen.generateId()));
-    this.metrics.add(new DummyMetric(this.idGen.generateId()));
+    // this.metrics.add(new DummyMetric(this.idGen.generateId()));
   }
 
   /**
