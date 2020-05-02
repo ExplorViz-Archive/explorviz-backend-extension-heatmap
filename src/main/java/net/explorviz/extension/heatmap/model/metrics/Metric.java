@@ -48,8 +48,9 @@ public abstract class Metric extends BaseEntity {
 
   /**
    * The logic which is used to compute the specified metric for a given class;
-   * 
-   * @param application TODO
+   *
+   * @param clazz the clazz for which the metric is computed for
+   * @param application the application that clazz is a part of
    *
    * @return The value of the metric for the given clazz.
    */

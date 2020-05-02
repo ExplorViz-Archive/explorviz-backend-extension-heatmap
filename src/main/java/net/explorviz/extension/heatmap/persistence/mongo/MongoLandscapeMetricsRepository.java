@@ -134,6 +134,8 @@ public class MongoLandscapeMetricsRepository implements HeatmapRepository<Landsc
         metricsCollection.find().limit(1).skip(n - 1)
             .sort(com.mongodb.client.model.Sorts.descending(MongoHelper.FIELD_TIMESTAMP));
 
+
+
     if (result.first() == null) {
       return Optional.empty();
     } else {

@@ -18,14 +18,16 @@ import net.explorviz.landscape.model.application.Clazz;
  * @author Tim-Niklas Reck
  *
  */
-@Type("classActivity")
+@Type("dynamicKey")
 @JsonIdentityInfo(generator = ObjectIdGenerators.StringIdGenerator.class, property = "super.id")
-public class ClassActivity extends Metric {
+public class DynamicKey extends Metric {
 
   @JsonCreator
-  public ClassActivity(@JsonProperty("id") final String id) {
-    super(id, "classActivity", "class activity",
-        "Combined metric for messages and number of instances.");
+  public DynamicKey(@JsonProperty("id") final String id) {
+    super(id, "dynamicKey", "dynamic Key",
+        "The percentage of sum of calls sent out from the class and calls received by the "
+            + "class at runtime taken over the total number of static calls sent and received "
+            + "by all the classes.");
   }
 
   @Override

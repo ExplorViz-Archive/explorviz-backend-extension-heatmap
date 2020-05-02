@@ -10,8 +10,8 @@ import net.explorviz.extension.heatmap.model.heatmap.ApplicationMetricCollection
 import net.explorviz.extension.heatmap.model.heatmap.ClazzMetric;
 import net.explorviz.extension.heatmap.model.heatmap.Heatmap;
 import net.explorviz.extension.heatmap.model.heatmap.LandscapeMetric;
-import net.explorviz.extension.heatmap.model.metrics.ClassActivity;
 import net.explorviz.extension.heatmap.model.metrics.DummyMetric;
+import net.explorviz.extension.heatmap.model.metrics.DynamicKey;
 import net.explorviz.extension.heatmap.model.metrics.ExportCoupling;
 import net.explorviz.extension.heatmap.model.metrics.ImportCoupling;
 import net.explorviz.extension.heatmap.model.metrics.InstanceCount;
@@ -48,11 +48,11 @@ public class ModelFactory {
     this.mongoHeatmapRepo = mongoHeatmapRepo;
     this.mongoMetricRepo = mongoMetricRepo;
 
-    this.metrics.add(new DummyMetric(this.idGen.generateId()));
-    this.metrics.add(new ClassActivity(this.idGen.generateId()));
+    this.metrics.add(new DynamicKey(this.idGen.generateId()));
     this.metrics.add(new ExportCoupling(this.idGen.generateId()));
     this.metrics.add(new ImportCoupling(this.idGen.generateId()));
     this.metrics.add(new InstanceCount(this.idGen.generateId()));
+    this.metrics.add(new DummyMetric(this.idGen.generateId()));
   }
 
   /**
@@ -327,7 +327,7 @@ public class ModelFactory {
                 comparedMetric.getClazzMetricByName(clazzMetric.getClazzName());
             if (comparedClazz != null) {
               oldMetricValues.remove(comparedClazz);
-              // ... substract old value from new value to get the difference.
+              // ... subtract old value from new value to get the difference.
               clazzMetric.subtractValue(comparedClazz.getValue());
             }
           }

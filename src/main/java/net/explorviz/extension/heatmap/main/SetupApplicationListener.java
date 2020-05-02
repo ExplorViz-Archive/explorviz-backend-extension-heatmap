@@ -52,10 +52,5 @@ public class SetupApplicationListener implements ApplicationEventListener {
     // add your DI injected code here for full DI context access
 
     new Thread(this.landscapeExchangeService).start();
-
-    // TODO: this.dummyService.startMyDummyStuff();
-
   }
-
-
 }

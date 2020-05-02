@@ -19,7 +19,7 @@ public final class MongoHelper { // NOPMD
   public static final String FIELD_ID = "_id";
   public static final String FIELD_TIMESTAMP = "timestamp";
   public static final String FIELD_HEATMAP = "heatmap";
-  public static final String FIELD_LANDSCAPEMETRICS = "landscape-metrics";
+  public static final String FIELD_LANDSCAPEMETRICS = "landscapemetrics";
 
   private static final Logger LOGGER = LoggerFactory.getLogger(MongoHelper.class);
 
@@ -28,7 +28,7 @@ public final class MongoHelper { // NOPMD
   private static final String DEFAULT_DB = "explorviz";
 
   private static final String HEATMAP_COLLECTION = "heatmap";
-  private static final String LANDSCAPE_METRIC_COLLECTION = "landscape-metric";
+  private static final String LANDSCAPE_METRIC_COLLECTION = "landscapemetric";
 
   private MongoClient client;
 

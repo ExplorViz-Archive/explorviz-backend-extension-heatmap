@@ -112,6 +112,7 @@ public class KafkaLandscapeExchangeService implements Runnable {
         // -- 1. compute metrics for landscape
         final LandscapeMetric lmetrics = this.modelFactory.createLandscapeMetrics(l);
         // LOGGER.info("Computed metrics for landscape with id: {}", l.getId());
+        // LOGGER.info("Number of Apps: " + lmetrics.getApplicationMetricCollections().size());
 
         // -- 2. compute heatmap with the new lmetrics
         final Heatmap heatmap = this.modelFactory.createHeatmap(lmetrics, this.previousTimestamp);

@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import com.github.jasminb.jsonapi.annotations.Type;
+import net.explorviz.extension.heatmap.model.helper.ModelFactory;
 import net.explorviz.landscape.model.application.Application;
 import net.explorviz.landscape.model.application.Clazz;
 
@@ -13,7 +14,8 @@ import net.explorviz.landscape.model.application.Clazz;
 public class DummyMetric extends Metric {
 
   /**
-   * "Dummy metric for testing and demonstration purposes."
+   * "Dummy metric for testing and demonstration purposes." Per default this metric is disabled and
+   * needs to be added to the list of metrics in the {@link ModelFactory}.
    *
    * @param id
    */

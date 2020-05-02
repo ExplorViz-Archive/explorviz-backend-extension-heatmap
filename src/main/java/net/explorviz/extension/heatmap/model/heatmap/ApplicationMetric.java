@@ -41,6 +41,19 @@ public class ApplicationMetric extends BaseEntity {
     return this.classMetricValues;
   }
 
+  public long getLargestValue() {
+    return this.largestValue;
+  }
+
+  public void setLargestValue(final long largestValue) {
+    this.largestValue = largestValue;
+  }
+
+  public void setClassMetricValues(final List<ClazzMetric> classMetricValues) {
+    this.classMetricValues = classMetricValues;
+  }
+
+
   /**
    * Return the {@link ClazzMetric} with the given clazzName
    *
@@ -56,18 +69,6 @@ public class ApplicationMetric extends BaseEntity {
       }
     }
     return clazzMetric;
-  }
-
-  public long getLargestValue() {
-    return this.largestValue;
-  }
-
-  public void setLargestValue(final long largestValue) {
-    this.largestValue = largestValue;
-  }
-
-  public void setClassMetricValues(final List<ClazzMetric> classMetricValues) {
-    this.classMetricValues = classMetricValues;
   }
 
   /**
