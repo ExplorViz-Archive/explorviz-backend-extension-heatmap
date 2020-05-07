@@ -61,12 +61,12 @@ public class ModelFactory {
    * @return
    */
   public LandscapeMetric createLandscapeMetrics(final Landscape landscape) {
+    final List<ApplicationMetricCollection> appMetricCollections =
+        this.computeApplicationMetricsCollection(landscape);
     final LandscapeMetric lmetrics =
         new LandscapeMetric(this.idGen.generateId(), landscape.getTimestamp().getTimestamp(),
             landscape.getId());
     lmetrics.setMetrics(this.metrics);
-    final List<ApplicationMetricCollection> appMetricCollections =
-        this.computeApplicationMetricsCollection(landscape);
     lmetrics.setApplicationMetricCollections(appMetricCollections);
     return lmetrics;
   }
