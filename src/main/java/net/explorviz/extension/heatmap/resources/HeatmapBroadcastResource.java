@@ -1,5 +1,8 @@
 package net.explorviz.extension.heatmap.resources;
 
+import io.swagger.v3.oas.annotations.enums.SecuritySchemeType;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import io.swagger.v3.oas.annotations.security.SecurityScheme;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import javax.annotation.security.PermitAll;
 import javax.inject.Inject;
@@ -12,6 +15,7 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.sse.SseEventSink;
 import net.explorviz.extension.heatmap.services.HeatmapService;
 import net.explorviz.extension.heatmap.services.KafkaLandscapeExchangeService;
+import net.explorviz.shared.security.filters.Secure;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -21,14 +25,13 @@ import org.slf4j.LoggerFactory;
  * @author Tim-Niklas Reck
  *
  */
-// @SecurityScheme(type = SecuritySchemeType.HTTP, name = "token", scheme = "bearer",
-// bearerFormat = "JWT")
-// @SecurityRequirement(name = "token")
+@SecurityScheme(type = SecuritySchemeType.HTTP, name = "token", scheme = "bearer",
+    bearerFormat = "JWT")
+@SecurityRequirement(name = "token")
 @Tag(name = "Heatmap Broadcast")
 @Path("v1/heatmap/broadcast")
-// @Secure
+@Secure
 @PermitAll
-// @RolesAllowed({"admin"})
 public class HeatmapBroadcastResource {
 
   // Access annotations can also be applied at method level

@@ -65,5 +65,8 @@ public class HeatmapApplication extends ResourceConfig {
 
     // Starting point for your DI-based extension
     this.register(SetupApplicationListener.class);
+    // swagger
+    this.packages("io.swagger.v3.jaxrs2.integration.resources");
+
   }
 }
