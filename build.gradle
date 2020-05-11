@@ -56,9 +56,7 @@ dependencies {
   	
   	// ExplorViz common exception handling
   	implementation group: 'net.explorviz', name: 'exception-handling', version: "${explorvizSharedVersion}"
-
 	implementation group: 'net.explorviz', name: 'common-concerns', version: "${explorvizSharedVersion}"  	
-  	
   	implementation group: 'net.explorviz', name: 'security', version: "${explorvizSharedVersion}"
   	
   	// ExplorViz landscape model
@@ -74,10 +72,11 @@ dependencies {
   	implementation group: 'org.glassfish.jersey.media', name: 'jersey-media-sse', version: '2.27'
   		
   	// https://mvnrepository.com/artifact/javax.xml.bind/jaxb-api
-	implementation group: 'javax.xml.bind', name: 'jaxb-api', version: '2.3.1'	
+	implementation group: 'javax.xml.bind', name: 'jaxb-api', version: '2.3.1'
+	// Required for authentication
+	implementation group: 'org.glassfish.jaxb', name: 'jaxb-runtime', version: '2.3.1'
 	// https://mvnrepository.com/artifact/javax.activation/javax.activation-api
 	implementation group: 'javax.activation', name: 'javax.activation-api', version: '1.2.0'
-	
   		
     // Use JUnit test framework
     testImplementation 'junit:junit:4.12'

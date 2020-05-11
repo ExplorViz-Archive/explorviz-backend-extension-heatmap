@@ -1,6 +1,13 @@
 package net.explorviz.extension.heatmap.resources;
 
+import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.enums.SecuritySchemeType;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import io.swagger.v3.oas.annotations.security.SecurityScheme;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import java.util.Optional;
 import java.util.stream.Stream;
@@ -14,6 +21,7 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import net.explorviz.extension.heatmap.model.heatmap.Heatmap;
 import net.explorviz.extension.heatmap.persistence.HeatmapRepository;
+import net.explorviz.shared.security.filters.Secure;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -26,11 +34,10 @@ import org.slf4j.LoggerFactory;
  */
 @Path("v1/heatmaps/")
 @Tag(name = "Heatmaps")
-// @RolesAllowed({"admin", "user"})
-// @SecurityScheme(type = SecuritySchemeType.HTTP, name = "token", scheme = "bearer",
-// bearerFormat = "JWT")
-// @SecurityRequirement(name = "token")
-// @Secure
+@SecurityScheme(type = SecuritySchemeType.HTTP, name = "token", scheme = "bearer",
+    bearerFormat = "JWT")
+@SecurityRequirement(name = "token")
+@Secure
 @PermitAll
 public class HeatmapReloadResource {
 
@@ -56,11 +63,11 @@ public class HeatmapReloadResource {
    */
   @GET
   @Produces(MEDIA_TYPE)
-  // @Operation(summary = "Find a heatmap by its timestamp")
-  // @ApiResponse(responseCode = "200",
-  // description = "Response contains the first heatmap with the given timestamp.",
-  // content = @Content(schema = @Schema(implementation = Heatmap.class)))
-  // @ApiResponse(responseCode = "404", description = "No heatmap with the given timestamp.")
+  @Operation(summary = "Find a heatmap by its timestamp")
+  @ApiResponse(responseCode = "200",
+      description = "Response contains the first heatmap with the given timestamp.",
+      content = @Content(schema = @Schema(implementation = Heatmap.class)))
+  @ApiResponse(responseCode = "404", description = "No heatmap with the given timestamp.")
   public String getHeatmapByTimestamp(@Parameter(description = "The timestamp to filter by.",
       required = true) @QueryParam("timestamp") final long timestamp) {
 
