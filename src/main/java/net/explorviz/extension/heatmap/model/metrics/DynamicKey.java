@@ -24,7 +24,7 @@ public class DynamicKey extends Metric {
 
   @JsonCreator
   public DynamicKey(@JsonProperty("id") final String id) {
-    super(id, "dynamicKey", "dynamic Key",
+    super(id, "dynamicKey", "dynamic key",
         "The percentage of sum of calls sent out from the class and calls received by the "
             + "class at runtime taken over the total number of static calls sent and received "
             + "by all the classes.");
