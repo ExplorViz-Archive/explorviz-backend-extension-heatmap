@@ -1,11 +1,12 @@
 # ExplorViz-Backend-Heatmap-Extension
 
-This repository holds the backend of the heatmap extension for [ExplorViz Backend](https://github.com/ExplorViz/explorviz-backend). The extension adds a heatmap visualization of dynamic data to the ExplorViz landscape visualizaion in the frontend as described [here]().
+This repository holds the backend of the heatmap extension for the [ExplorViz Backend](https://github.com/ExplorViz/explorviz-backend). The extension adds a heatmap visualization of dynamic data to the ExplorViz landscape visualization of the frontend as described [here](https://github.com/ExplorViz/explorviz-frontend-extension-heatmap).
 
 ## Requirements
-[ExplorViz Backend](https://github.com/ExplorViz/explorviz-backend/tree/1.5.0) Version 1.5.0 
-[ExplorViz Frontend](https://github.com/ExplorViz/explorviz-frontend/tree/1.5.0) Version 1.5.0
-[ExplorViz Frontend Extension Heatmap](https://github.com/ExplorViz/explorviz-frontend-extension-heatmap)
+* [ExplorViz Backend](https://github.com/ExplorViz/explorviz-backend/tree/1.5.0) Version 1.5.0 
+* [ExplorViz Frontend](https://github.com/ExplorViz/explorviz-frontend/tree/1.5.0) Version 1.5.0
+* [ExplorViz Frontend Extension Heatmap](https://github.com/ExplorViz/explorviz-frontend-extension-heatmap)
+
 
 ## Setup Development / Usage
 
