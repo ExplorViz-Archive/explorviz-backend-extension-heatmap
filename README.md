@@ -23,7 +23,7 @@ This repository holds the backend of the heatmap extension for [ExplorViz Backen
 
 ## Attention
 
-For the communication between frontend and backend extension it is required  to add the backend routes of the broadcast and reload resources to the Traefik configuration. In []./docker-compose/traefik](https://github.com/ExplorViz/explorviz-backend-extension-heatmap/tree/master/docker-compose/traefik) we provide a configuration file that can be used.
+For the communication between frontend and backend extension it is required  to add the backend routes of the broadcast and reload resources to the Traefik configuration. In [./docker-compose/traefik](https://github.com/ExplorViz/explorviz-backend-extension-heatmap/tree/master/docker-compose/traefik) we provide a configuration file that can be used.
 
 Furthermore, we provide a [docker-compose file](https://github.com/ExplorViz/explorviz-backend-extension-heatmap/blob/master/docker-compose/docker-compose.yml) to start the auxiliary services of the backend software stack alltogether.
 
