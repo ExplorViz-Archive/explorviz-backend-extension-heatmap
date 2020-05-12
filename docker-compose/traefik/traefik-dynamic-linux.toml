@@ -21,6 +21,10 @@
     rule = "PathPrefix(`/v1/tokens`) || PathPrefix(`/v1/users`) || PathPrefix(`/v1/roles`) || PathPrefix(`/v1/userbatch`)"
     service = "user"
 
+  [http.routers.heatmap]
+    rule = "PathPrefix(`/v1/heatmap/broadcast`) || PathPrefix(`/v1/heatmaps`)"
+    service = "heatmap" 
+
 [http.services]
 
   [http.services.broadcast]  
@@ -42,3 +46,7 @@
   [http.services.user]  
     [[http.services.user.loadBalancer.servers]]
       url = "http://localhost:8082"
+
+  [http.services.heatmap]  
+    [[http.services.heatmap.loadBalancer.servers]]
+      url = "http://host.docker.internal:8085"
