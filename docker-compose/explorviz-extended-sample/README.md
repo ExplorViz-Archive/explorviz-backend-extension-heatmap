@@ -1,3 +1,7 @@
+# ExplorViz Extended with Sample Landscapes
+
+This dockerfile executes the entire ExplorViz v 1.5.0 stack with our extension and a modified landscape-service that provides sample landscapes. Therefore, there is no need and possibility to add a monitored application anymore. If you are interested in this functionality please use [this](https://github.com/ExplorViz/explorviz-backend-extension-heatmap/tree/master/docker-compose/explorviz-extended) file.
+
 ## Usage
 
 To start the application follow these steps:
