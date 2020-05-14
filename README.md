@@ -13,7 +13,7 @@ To start the entire software stack of ExplirViz with our extension we provide a 
 
 To start the application follow these steps:
 
-1. Get the latest versions of Docker and Docker Compose.
+1. Get the latest versions of [Docker and Docker Compose](https://www.docker.com/get-started).
 2. Navigate into the directory of the docker-compose file.
 3. Adjust the FRONTEND_IP variable to point to the domain or IP you will be accessing ExplorViz with. Depending on which machine you apply docker-compose, either use the machine's IP/hostname or localhost.
 4. Starting ExplorViz: docker-compose up -d.
