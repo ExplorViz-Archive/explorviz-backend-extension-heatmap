@@ -38,3 +38,10 @@ For the communication between frontend and backend extension it is required  to 
 Furthermore, we provide a [docker-compose file](https://github.com/ExplorViz/explorviz-backend-extension-heatmap/blob/master/docker-compose/auxiliary-software-stack/docker-compose.yml) to start the auxiliary services of the backend software stack alltogether.
 
 If you want to use the backend separately you need to provide a MongoDB instance on port 27020 or configure the port in the [explorviz-properties](https://github.com/ExplorViz/explorviz-backend-extension-heatmap/blob/master/src/main/resources/explorviz.properties) of the extension.
+
+## Sample Applications
+
+For testing and demonstration purposes you can instrument an application of your choice as described [here](https://github.com/ExplorViz/docs/wiki/Monitoring-Configuration) or use the following applications:
+
+- [ExplorViz/sampleApplication](https://github.com/ExplorViz/sampleApplication)
+- [SpringSampleApp](https://github.com/Invice/SpringSampleApp).
